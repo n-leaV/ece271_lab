@@ -5,6 +5,32 @@
 // PC.13 <--> Blue user button
 #define LED_PIN    5
 #define BUTTON_PIN 13
+void TIM2_CH1_Init() {
+	RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;		//enable timer clock
+	
+	TIM2->CR1 &= ~TIM_CR1_DIR; //select up counting
+	
+	TIM2->PSC = 39;
+	
+	TIM2->ARR = 999;
+	
+	TIM2->CCR1 = 500;
+	
+	TIM2->CCMR1 &= ~TIM_CCMR1_OC1M;
+	
+	TIM2->CCMR1 |= TIM_CCMR1_OC1M | TIM_CCMR1_OC1M_2;
+	
+	TIM2->CCMR1 |= TIM_CCMR1_OC1PE;	//output 1 preload enable
+	
+	TIM2->CCER &= ~TIM_CCER_CC1P;		//select output polarity
+	
+	TIM2->CCER |= TIM_CCER_CC1E;		//enable output channel 1
+	
+	TIM2->BDTR |= TIM_BDTR_MOE;		//Maine output enable
+	
+	TIM2->CR1 |= TIM_CR1_CEN;		//Start counter
+}
+
 
 int main(void){
 
@@ -37,11 +63,25 @@ int main(void){
 	// Turn on the LED
 	
   // Dead loop & program hangs here
-	while(1){
+	/*while(1){
 		if(!(GPIOC->IDR & GPIO_IDR_IDR_13)){					//if button pressed
 			GPIOA->ODR ^= (1<<(LED_PIN));								//toggle led
 			while(!(GPIOC->IDR & GPIO_IDR_IDR_13)) {};	//wait for button to unpress	
 			
 		};
-	};
+	};*/
+	
+	int i;
+	int brightness = 1;
+	int stepSize = 1;
+	
+	TIM2_CH1_Init();
+	while(1) {
+		if ((brightness >=999) || (brightness <= 0))
+			stepSize = -stepSize;
+		
+		brightness += stepSize;
+		TIM2->CCR1 = brightness;
+		for(i = 0; i < 1000; i++);
+	}
 }
