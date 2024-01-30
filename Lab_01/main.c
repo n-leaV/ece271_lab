@@ -10,17 +10,17 @@ void TIM2_CH1_Init() {
 	
 	TIM2->CR1 &= ~TIM_CR1_DIR; //select up counting
 	
-	TIM2->PSC = 39;
+	TIM2->PSC = 39;	//4Mhz/1+39  = 100khz
 	
-	TIM2->ARR = 999;
+	TIM2->ARR = 999;	//pwm period =999+1 * (1/100khz = 0.01s
 	
-	TIM2->CCR1 = 500;
+	TIM2->CCR1 = 500;	//initial duty cycle = 50%
 	
-	TIM2->CCMR1 &= ~TIM_CCMR1_OC1M;
+	TIM2->CCMR1 &= ~TIM_CCMR1_OC1M;	// clear output compare mode bits
 	
-	TIM2->CCMR1 |= TIM_CCMR1_OC1M | TIM_CCMR1_OC1M_2;
+	TIM2->CCMR1 |= TIM_CCMR1_OC1M | TIM_CCMR1_OC1M_2;	//select pwm mode 1
 	
-	TIM2->CCMR1 |= TIM_CCMR1_OC1PE;	//output 1 preload enable
+	TIM2->CCMR1 |= TIM_CCMR1_OC1PE;	//output 1 preload enable - synchronicty
 	
 	TIM2->CCER &= ~TIM_CCER_CC1P;		//select output polarity
 	
@@ -39,7 +39,11 @@ int main(void){
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;	// Enable the clock of Port A
 	
 	GPIOA->MODER &= ~(3<<(2*LED_PIN)); // Clear mode bits for pin 5
-	GPIOA->MODER |= (1<<(2*LED_PIN)); // Set the mode bits to 01
+	//GPIOA->MODER |= (1<<(2*LED_PIN)); // Set the mode bits to 01
+	GPIOA->MODER	|= (2<<(2*LED_PIN)); 	//set the mode bits to 10 - alternate function
+	
+	GPIOA->AFR[0] &= ~(0xf<<(4*LED_PIN));	//selecting alternate function 1
+	GPIOA->AFR[0] |= 1UL<<(4*LED_PIN);	//TIM channel 2 is defined as 01
 
 	GPIOA->OTYPER &= ~(1<<(LED_PIN)); // Clear bit 5
 	GPIOA->OTYPER |= (0);			// Set OTYPER to push pull
@@ -83,5 +87,6 @@ int main(void){
 		brightness += stepSize;
 		TIM2->CCR1 = brightness;
 		for(i = 0; i < 1000; i++);
+		
 	}
 }
