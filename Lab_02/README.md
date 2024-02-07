@@ -1,6 +1,6 @@
 ##  Lab Report ##
 
-Your Name: 
+Your Name: Nick Leavitt
 -----------
 
 
@@ -12,6 +12,10 @@ Answer the following questions by put a "x" in the bracket.
 - Yes [x], No []: Complete something cool
   - If you have completed something cool, give it a short summary below: 
     When I press the button, the motor rotates 90 degrees.
+
+Half stepping stops working at an update frequency of 59 Hz
+
+Full stepping stops working at an update frequency of 61 Hz
 
 Answers to Pre-lab Questions (if applicable)
 -------
