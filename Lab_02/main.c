@@ -26,13 +26,15 @@ int main(void){
 	System_Clock_Init(); // Switch System Clock = 80 MHz
 	setup_pushbutton_gpio();
 	setup_motor_gpio();
-	while(1){
-	if(!(GPIOC->IDR & GPIO_IDR_IDR_13)){					//if button pressed
-			full_stepping_sequence_90();					//rotate 90
-		
+
+	//while(1){
+	//if(!(GPIOC->IDR & GPIO_IDR_IDR_13)){					//if button pressed
+	//		full_stepping_sequence_90();					//rotate 90
+		half_stepping_sequence_360();
+
 			
-		};
-	}
+		//};
+	//}
 }
 
 

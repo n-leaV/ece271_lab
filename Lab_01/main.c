@@ -39,11 +39,11 @@ int main(void){
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;	// Enable the clock of Port A
 	
 	GPIOA->MODER &= ~(3<<(2*LED_PIN)); // Clear mode bits for pin 5
-	//GPIOA->MODER |= (1<<(2*LED_PIN)); // Set the mode bits to 01
-	GPIOA->MODER	|= (2<<(2*LED_PIN)); 	//set the mode bits to 10 - alternate function
+	GPIOA->MODER |= (1<<(2*LED_PIN)); // Set the mode bits to 01
+//	GPIOA->MODER	|= (2<<(2*LED_PIN)); 	//set the mode bits to 10 - alternate function
 	
-	GPIOA->AFR[0] &= ~(0xf<<(4*LED_PIN));	//selecting alternate function 1
-	GPIOA->AFR[0] |= 1UL<<(4*LED_PIN);	//TIM channel 2 is defined as 01
+//	GPIOA->AFR[0] &= ~(0xf<<(4*LED_PIN));	//selecting alternate function 1
+//	GPIOA->AFR[0] |= 1UL<<(4*LED_PIN);	//TIM channel 2 is defined as 01
 
 	GPIOA->OTYPER &= ~(1<<(LED_PIN)); // Clear bit 5
 	GPIOA->OTYPER |= (0);			// Set OTYPER to push pull
@@ -67,15 +67,15 @@ int main(void){
 	// Turn on the LED
 	
   // Dead loop & program hangs here
-	/*while(1){
+	while(1){
 		if(!(GPIOC->IDR & GPIO_IDR_IDR_13)){					//if button pressed
 			GPIOA->ODR ^= (1<<(LED_PIN));								//toggle led
 			while(!(GPIOC->IDR & GPIO_IDR_IDR_13)) {};	//wait for button to unpress	
 			
 		};
-	};*/
+	};
 	
-	int i;
+/*	int i;
 	int brightness = 1;
 	int stepSize = 1;
 	
@@ -88,5 +88,5 @@ int main(void){
 		TIM2->CCR1 = brightness;
 		for(i = 0; i < 1000; i++);
 		
-	}
+	}*/
 }
