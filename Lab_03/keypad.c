@@ -53,7 +53,7 @@ unsigned char keypad_scan(void){
 		GPIOC->ODR &= ~(1<<rows[row]);
 	}
 	
-	if (GPIOC->IDR
+	if ((GPIOC->IDR & (1<<cols[colpressed])) == 0)
 	
 	
 }
