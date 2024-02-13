@@ -1,5 +1,7 @@
 #include "stm32l476xx.h"
 #include "SysClock.h"
+#include "keypad.h"
+
 
 // PA.5  <--> Green LED
 // PC.13 <--> Blue user button

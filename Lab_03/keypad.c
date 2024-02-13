@@ -22,18 +22,26 @@ void keypad_pin_init(void) {
 
 
 unsigned char keypad_scan(void){
+	
+	
 	unsigned char row, col, colpressed;
 	unsigned char key = 0xff;
+	unsigned char key_map [4][4] ={
+		{'1','2','3','A'},
+		{'4','5','6','B'},
+		{'7','8','9','C'},
+		{'*','2','#','D'},
+	};
 	uint32_t inputmask, outputmask;
 	int rows[] = {0, 1, 2, 3};			//port c
 	int cols[] = {4, 10, 11, 12};		//port c
 
 	
-	for(col=0; col<4; col++){
+	for(col=0; col<4; col++){				//initializing cols
 		inputmask |= 1<<cols[col];
 	}
 	
-	for(row=0; row<4; row++){
+	for(row=0; row<4; row++){				//initializing rows
 		outputmask |= 1<<rows[row];
 	}
 	
@@ -51,9 +59,12 @@ unsigned char keypad_scan(void){
 	for(row=0; row<4; row++){
 		GPIOC->ODR |= outputmask;
 		GPIOC->ODR &= ~(1<<rows[row]);
+		if ((GPIOC->IDR & (1<<cols[colpressed])) == 0){
+			key = key_map[row][colpressed];
+		}
 	}
 	
-	if ((GPIOC->IDR & (1<<cols[colpressed])) == 0)
+	
 	
 	
 }
