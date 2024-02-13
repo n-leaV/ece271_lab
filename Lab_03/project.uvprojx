@@ -138,7 +138,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -400,24 +400,29 @@
               <FilePath>.\stm32l476xx.h</FilePath>
             </File>
             <File>
-              <FileName>README.md</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\README.md</FilePath>
-            </File>
-            <File>
               <FileName>SysClock.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\SysClock.c</FilePath>
             </File>
             <File>
-              <FileName>keypad.c</FileName>
+              <FileName>I2C.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\keypad.c</FilePath>
+              <FilePath>.\I2C.c</FilePath>
             </File>
             <File>
-              <FileName>keypad.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\keypad.h</FilePath>
+              <FileName>ssd1306.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ssd1306.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssd1306_fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ssd1306_fonts.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssd1306_tests.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ssd1306_tests.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -438,20 +443,7 @@
         </targetInfos>
       </component>
     </components>
-    <files>
-      <file attr="config" category="sourceAsm" condition="Compiler ARMCC" name="Device\Source\ARM\startup_stm32l476xx.s" version="1.0.0">
-        <instance index="0" removed="1">RTE\Device\STM32L476VGTx\startup_stm32l476xx.s</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.0.0" condition="STM32L476 CMSIS"/>
-        <package name="STM32L4xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack" vendor="Keil" version="1.0.0"/>
-        <targetInfos/>
-      </file>
-      <file attr="config" category="sourceC" name="Device\Source\system_stm32l4xx.c" version="1.0.0">
-        <instance index="0" removed="1">RTE\Device\STM32L476VGTx\system_stm32l4xx.c</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.0.0" condition="STM32L476 CMSIS"/>
-        <package name="STM32L4xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack" vendor="Keil" version="1.0.0"/>
-        <targetInfos/>
-      </file>
-    </files>
+    <files/>
   </RTE>
 
   <LayerInfo>

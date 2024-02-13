@@ -36,35 +36,35 @@ unsigned char keypad_scan(void){
 	int rows[] = {0, 1, 2, 3};			//port c
 	int cols[] = {4, 10, 11, 12};		//port c
 
-	
-	for(col=0; col<4; col++){				//initializing cols
+	for(col=0; col<4; col++){				//initializing inputmask for cols
 		inputmask |= 1<<cols[col];
 	}
-	
-	for(row=0; row<4; row++){				//initializing rows
+	for(row=0; row<4; row++){				//initializing output mask rows
 		outputmask |= 1<<rows[row];
 	}
-	
 	GPIOC->ODR &= ~outputmask;
 	waitms(3);
 	if ((GPIOC->IDR & inputmask) == inputmask){
 			return 0xff;
 	}
-		
+	//else loop?
+	waitms(3);
 	for(col=0; col<4; col++){
-		if ((GPIOC->IDR & (1<<cols[col])) == 0)
+		if ((GPIOC->IDR & (1<<cols[col])) == 0){
 			colpressed = col;
+		}	
 	}
-
 	for(row=0; row<4; row++){
 		GPIOC->ODR |= outputmask;
 		GPIOC->ODR &= ~(1<<rows[row]);
+		waitms(1);
 		if ((GPIOC->IDR & (1<<cols[colpressed])) == 0){
 			key = key_map[row][colpressed];
+			GPIOC->ODR |= (1<<rows[r]);
+			break;
 		}
+		GPIOC->ODR |= (1<<rows[r]);
 	}
-	
-	
-	
-	
+	GPIOC->ODR &= ~(outputmask);
+	return key;
 }

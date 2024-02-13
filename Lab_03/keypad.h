@@ -1,4 +1,4 @@
-#ifndef __KEYPAD_H
+//#ifndef __KEYPAD_H
 #define __KEYPAD_H
 #include "stm32l476xx.h"
 
