@@ -4,19 +4,39 @@
 
 //Initialize functions
 
-unsigned char keypad_scan();
-void keypad_pin_init();
-
+unsigned char keypad_scan(void);
+void keypad_pin_init(void);
+void waitms(int ms);
 
 
 
 
 // Define functions
 
+
+void waitms(int ms) {
+	if (ms==0) return;
+	RCC->APB1ENR1 |= RCC_APB1ENR1_TIM7EN;
+	TIM7->CR1 &= ~TIM_CR1_CEN;
+	TIM7->SR = 0;
+	TIM7->CNT = 0;
+	TIM7->PSC = 3999;
+	TIM7->ARR = 20*ms -1;
+	TIM7->RCR = 0;
+	TIM7->CR1 |= TIM_CR1_CEN;
+	while ( (TIM7->SR & TIM_SR_UIF) == 0);	
+}
+	
+
+
 void keypad_pin_init(void) {
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN; // Port C clock enable
 	GPIOC->MODER &= ~(0x03f003ff);	//clear out bits
 	GPIOC->MODER |= 0x00000055;			//set 0,1,2,3 as digital out and 4, 10, 11, 12 as digital in
+	GPIOC->OTYPER &= ~(0x0000000f); // clear bits from 0-3
+	GPIOC->OTYPER |= 0x0000000f;
+	GPIOC->PUPDR &= ~(0x03f003ff);
+	GPIOC->PUPDR |= 0x00000000;
 }
 
 
@@ -60,10 +80,10 @@ unsigned char keypad_scan(void){
 		waitms(1);
 		if ((GPIOC->IDR & (1<<cols[colpressed])) == 0){
 			key = key_map[row][colpressed];
-			GPIOC->ODR |= (1<<rows[r]);
+			GPIOC->ODR |= (1<<rows[row]);
 			break;
 		}
-		GPIOC->ODR |= (1<<rows[r]);
+		GPIOC->ODR |= (1<<rows[row]);
 	}
 	GPIOC->ODR &= ~(outputmask);
 	return key;

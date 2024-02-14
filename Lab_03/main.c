@@ -43,11 +43,19 @@ int main(void){
 //		count++;
 //	}
 	
-	while(1){
-	char key;
-	key = keypad_scan();
-	ssd1306_WriteChar(key, Font_11x18, Black);
-	ssd1306_UpdateScreen();
-	} // Deadloop
+//			WORKING LAB CODE												//
+//	while(1){
+//	char key;
+//	key = keypad_scan();
+//	ssd1306_WriteChar(key, Font_11x18, Black);
+//	ssd1306_UpdateScreen();
+//	} // Deadloop
+
+while (1){
+	
+	
+	ssd1306_WriteString(message, Font_11x18, Black);
+	
+}
 }
 
