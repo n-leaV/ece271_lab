@@ -44,18 +44,37 @@ int main(void){
 //	}
 	
 //			WORKING LAB CODE												//
-//	while(1){
-//	char key;
-//	key = keypad_scan();
-//	ssd1306_WriteChar(key, Font_11x18, Black);
-//	ssd1306_UpdateScreen();
-//	} // Deadloop
+	while(1){
+	char key;
+	key = keypad_scan();
+	ssd1306_WriteChar(key, Font_11x18, Black);
+	ssd1306_UpdateScreen();
+	} // Deadloop
 
-while (1){
-	
-	
-	ssd1306_WriteString(message, Font_11x18, Black);
-	
-}
+
+
+
+//char buffer[100];
+//int i;
+//for (i=0; i<100; i++){
+//	buffer[i] = ' ';
+//}
+//int count = 0;
+//while (1){
+//	char key;
+//	ssd1306_WriteString(buffer, Font_11x18, Black);
+//	key=keypad_scan();
+//	if(!(key = 0xff)){
+//		buffer[count] = key;
+//		count ++;
+//	}	
+//	if((key == '*')&&(count>0)){
+//		count = count-1;
+//		buffer[count] = key;
+//		count ++;
+//	}
+//	ssd1306_UpdateScreen();
+//}
+
 }
 

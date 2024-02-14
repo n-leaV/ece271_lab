@@ -7,6 +7,7 @@
 unsigned char keypad_scan(void);
 void keypad_pin_init(void);
 void waitms(int ms);
+char adjust(char key);
 
 
 
@@ -39,7 +40,49 @@ void keypad_pin_init(void) {
 	GPIOC->PUPDR |= 0x00000000;
 }
 
-
+char adjust(char key){
+	switch (key){
+		case '*':
+			key ='4';
+			break;
+		case '2':
+			key ='5';
+			break;
+		case '#':
+			key ='6';
+			break;
+		case '4':
+			key ='7';
+			break;
+		case '5':
+			key ='8';
+			break;
+		case '6':
+			key ='9';
+			break;
+		case '8':
+			key ='0';
+			break;
+		case 'D':
+			key ='B';
+			break;
+		case 'B':
+			key ='C';
+			break;
+		case 'C':
+			key ='D';
+			break;
+		case '7':
+			key ='*';
+			break;
+		case '9':
+			key ='#';
+			break;
+		default:
+			return key;
+	}
+return key;
+}
 
 unsigned char keypad_scan(void){
 	
@@ -75,7 +118,7 @@ unsigned char keypad_scan(void){
 		}	
 	}
 	for(row=0; row<4; row++){
-		GPIOC->ODR |= outputmask;
+		GPIOC->ODR |= 0xff;
 		GPIOC->ODR &= ~(1<<rows[row]);
 		waitms(1);
 		if ((GPIOC->IDR & (1<<cols[colpressed])) == 0){
@@ -88,3 +131,5 @@ unsigned char keypad_scan(void){
 	GPIOC->ODR &= ~(outputmask);
 	return key;
 }
+
+
