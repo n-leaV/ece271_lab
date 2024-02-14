@@ -20,10 +20,8 @@ uint8_t Data_Send[6];
 void I2C_GPIO_init(void);
 	
 int main(void){
-	volatile int i;
-	int count = 0;
-	char message[64] = "ABCDEFGHIJK";
 	
+	keypad_pin_init();
 	System_Clock_Init(); // Switch System Clock = 80 MHz
 	I2C_GPIO_init();
 	I2C_Initialization(I2C1);
@@ -32,19 +30,24 @@ int main(void){
 	ssd1306_Init();
 	ssd1306_Fill(White);
 	ssd1306_SetCursor(2,0);
-	ssd1306_WriteString(message, Font_11x18, Black);		
+//	ssd1306_WriteString(message, Font_11x18, Black);		
 	ssd1306_UpdateScreen();	
 	
-	while(1){
-		for(i=0; i<100000; i++);
-		sprintf(message, "%d", count);
-		ssd1306_Fill(White);
-		ssd1306_SetCursor(2,0);
-		ssd1306_WriteString(message, Font_11x18, Black);
-		ssd1306_UpdateScreen();	
-		count++;
-	}
+//	while(1){
+//		for(i=0; i<100000; i++);
+//		sprintf(message, "%d", count);
+//		ssd1306_Fill(White);
+//		ssd1306_SetCursor(2,0);
+//		ssd1306_WriteString(message, Font_11x18, Black);
+//		ssd1306_UpdateScreen();	
+//		count++;
+//	}
 	
-	while(1);	 // Deadloop
+	while(1){
+	char key;
+	key = keypad_scan();
+	ssd1306_WriteChar(key, Font_11x18, Black);
+	ssd1306_UpdateScreen();
+	} // Deadloop
 }
 
