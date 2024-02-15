@@ -12,7 +12,6 @@ char adjust(char key);
 
 
 
-
 // Define functions
 
 
@@ -41,49 +40,49 @@ void keypad_pin_init(void) {
 	GPIOC->PUPDR |= 0x00000000;
 }
 
-char adjust(char key){
-	switch (key){
-		case '*':
-			key ='4';
-			break;
-		case '2':
-			key ='5';
-			break;
-		case '#':
-			key ='6';
-			break;
-		case '4':
-			key ='7';
-			break;
-		case '5':
-			key ='8';
-			break;
-		case '6':
-			key ='9';
-			break;
-		case '8':
-			key ='0';
-			break;
-		case 'D':
-			key ='B';
-			break;
-		case 'B':
-			key ='C';
-			break;
-		case 'C':
-			key ='D';
-			break;
-		case '7':
-			key ='*';
-			break;
-		case '9':
-			key ='#';
-			break;
-		default:
-			return key;
-	}
-return key;
-}
+//char adjust(char key){
+//	switch (key){
+//		case '*':
+//			key ='4';
+//			break;
+//		case '2':
+//			key ='5';
+//			break;
+//		case '#':
+//			key ='6';
+//			break;
+//		case '4':
+//			key ='7';
+//			break;
+//		case '5':
+//			key ='8';
+//			break;
+//		case '6':
+//			key ='9';
+//			break;
+//		case '8':
+//			key ='0';
+//			break;
+//		case 'D':
+//			key ='B';
+//			break;
+//		case 'B':
+//			key ='C';
+//			break;
+//		case 'C':
+//			key ='D';
+//			break;
+//		case '7':
+//			key ='*';
+//			break;
+//		case '9':
+//			key ='#';
+//			break;
+//		default:
+//			return key;
+//	}
+//return key;
+//}
 
 unsigned char keypad_scan(void){
 	
@@ -94,7 +93,7 @@ unsigned char keypad_scan(void){
 		{'1','2','3','A'},
 		{'4','5','6','B'},
 		{'7','8','9','C'},
-		{'*','2','#','D'},
+		{'*','0','#','D'},
 	};
 	uint32_t inputmask, outputmask;
 	int rows[] = {0, 1, 2, 3};			//port c
@@ -111,18 +110,18 @@ unsigned char keypad_scan(void){
 	if ((GPIOC->IDR & inputmask) == inputmask){
 			return 0xff;
 	}
-	//else loop?
+
 	waitms(3);
 	for(col=0; col<4; col++){
-		if ((GPIOC->IDR & (1<<cols[col])) == 0){
+		if (!(GPIOC->IDR & (1<<cols[col]))){
 			colpressed = col;
 		}	
 	}
 	for(row=0; row<4; row++){
-		GPIOC->ODR |= 0xff;
+		GPIOC->ODR |= outputmask;
 		GPIOC->ODR &= ~(1<<rows[row]);
-		waitms(1);
-		if ((GPIOC->IDR & (1<<cols[colpressed])) == 0){
+		waitms(3);
+		if (!(GPIOC->IDR & (1<<cols[colpressed]))){
 			key = key_map[row][colpressed];
 			GPIOC->ODR |= (1<<rows[row]);
 			break;
