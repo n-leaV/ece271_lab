@@ -1,15 +1,15 @@
 ##  Lab Report ##
 
-Your Name: 
+Your Name: Nick Leavitt
 -----------
 
 
 Lab Status
 -------
 Answer the following questions by put a "x" in the bracket.
-- Yes [], No []: Complete pre-lab
-- Yes [], No []: Complete basic lab requirements
-- Yes [], No []: Complete something cool
+- Yes [x], No []: Complete pre-lab
+- Yes [x], No []: Complete basic lab requirements
+- Yes [x], No []: Complete something cool
   - If you have completed something cool, give it a short summary below: 
 
 
@@ -30,7 +30,7 @@ Answers to After-lab Questions (if applicable)
 -------
 
 * Question 1:
-
+  My code cannot discern between multiple keypresses. One way to fix that would be to not use a matrix and have singular buttons for each key.
 
 * Question 2:
 
@@ -42,17 +42,18 @@ Suggestions and Comments
 -------
 
 * Do you have comments or suggestions for the lab and course?
-
+-
 
 * Do you have comments or suggestions for the textbook and lab handouts? Any typos or errors?
-
+-
 
 
 Lab Credits
 -------
 Did you received any help from someone other than the instructor and lab teaching assistants?
-- Yes [ ]
+- Yes [x]
+
 - No []
 
 If yes, please give a short explanation.
-
+  I worked with quite a few other students: Collin Scobie, Swaroop Handral, Atticus Foster, Jacob Bentley
