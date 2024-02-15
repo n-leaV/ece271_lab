@@ -44,10 +44,16 @@ int main(void){
 //	}
 	
 //			WORKING LAB CODE												//
+	int color=Black;
 	while(1){
 	char key;
 	key = keypad_scan();
-	ssd1306_WriteChar(key, Font_11x18, Black);
+	if(key=='*'){
+		color ^=0x1;
+	}
+	else{
+		ssd1306_WriteChar(key, Font_11x18, color);
+	}	
 	ssd1306_UpdateScreen();
 	} // Deadloop
 
