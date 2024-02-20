@@ -44,24 +44,54 @@ __main	PROC
 	LDR r1, [r0, #GPIO_MODER]
 	BIC r1, r1, #(3<<(2*LED_PIN))
 	ORR r1, r1, #(1<<(2*LED_PIN))
-	STR r1, [r0, #GPIO_MODER]
-
+	STR r1, [r0, #GPIO_MODER]			;Clearing and setting LED MODER to output
+									
 	LDR r1, [r0, #GPIO_ODR]
-	ORR r1, r1, #(1<<LED_PIN)
-	STR r1, [r0, #GPIO_ODR]
+	BIC r1, r1, #(1<<LED_PIN)
+	STR r1, [r0, #GPIO_ODR]				;Setting LED ODR to 0 (off)
+	
+	LDR r1, [r0, #GPIO_PUPDR]
+	BIC r1, r1, #(3<<(2*LED_PIN))
+	STR r1, [r0, #GPIO_PUPDR]			;Clearing and setting LED PUPDR to no pull up, no pull down
+	
+	LDR r1, [r0,#GPIO_OTYPER]
+	BIC r1, r1, #(1<<LED_PIN)
+	STR r1, [r0, #GPIO_OTYPER]			;Clearing and setting LED OTYPER to push pull
 	
 	; MODE: 00: Input mode, 01: General purpose output mode
     ;       10: Alternate function mode, 11: Analog mode (reset state)
 	LDR r0, =GPIOC_BASE
 	LDR r1, [r0, #GPIO_MODER]
 	BIC r1, r1, #(3<<(2*BUTTON_PIN))
-	STR r1, [r0, #GPIO_MODER]
+	STR r1, [r0, #GPIO_MODER]			;Clearing and setting Button MODER to input
 
 	LDR r1, [r0, #GPIO_PUPDR]
-	ORR r1, r1, #(3<<L(2*BUTTON_PIN))
-	STR r1, [r0, #GPIO_PUPDR]
+	BIC r1, r1, #(3<<(2*BUTTON_PIN))
+	STR r1, [r0, #GPIO_PUPDR]			;Clearing and setting button PUPDR to no pull up, no pull down
 	
+	LDR r2, =GPIOA_BASE					;using r2 as GPIOA base
+loop
+	LDR r1, [r0, #GPIO_IDR]			;Load Idr
+	ROR r1, r1, #BUTTON_PIN			;Rotate until button pin is in the LSB position
+	BIC r1, r1, #0xfffffffe			;Clear everything but LSB
+	EOR r1, r1, #1					;Button is high when open, so this flips the bit
+	CMP r1, #1						;Compare LSB to #1
+	BEQ	pres						;If equal, go to pres//means the button was pressed
+	B skip							;Skip the button pressed code
+pres
+	LDR r3, [r2, #GPIO_ODR]
+	EOR r3, r3, #(1<<LED_PIN)		;Toggle the ODR pin (flip on/off)
+	STR r3, [r2, #GPIO_ODR]
+hold
+	LDR r1, [r0, #GPIO_IDR]			;Testing if the button is still pressed//same code as above
+	ROR r1, r1, #BUTTON_PIN
+	BIC r1, r1, #0xfffffffe
+	EOR r1, r1, #1					
+	CMP r1, #1
+	BEQ hold
 	
+skip
+	B	loop						;Loop
   
 stop 	B 		stop     		; dead loop & program hangs here
 
