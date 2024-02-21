@@ -1,6 +1,6 @@
 ##  Lab Report ##
 
-Your Name: 
+Your Name: Nick Leavitt
 -----------
 
 
@@ -30,16 +30,16 @@ Answers to After-lab Questions (if applicable)
 -------
 
 * Question 1:
-  The Hardware debouncing circuit is a simple RC circuit that smooths out the voltage of the push button. It is effectivley a low pass filter.
+ The MOV intrsuction doesn't work for 32 bit values, they are too large.
 
 * Question 2:
-  Debouncing can be achieved in the software level through a couple techniques. One of these is a counter debouncer, that checks the button at intervals, and only confirms the button press after a number of stable readings.
+  You could work around it by ORR-ing two different numbers, and shifting
 
 * Question 3:
-  We configure the push button to no pull up/no pull down because the internal resistors are too large which prevents the button toggling at normal speeds.
+  CMP updates the flags, and does not store any values
 
 * Question 4:
-  We want the low speed configuration for the LEDs to save power and to prevent excess EMI.
+  You could use BIC to turn off an LED by clearing the bit that powers the LED
 
 Suggestions and Comments
 -------
