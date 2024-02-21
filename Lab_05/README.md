@@ -1,6 +1,6 @@
 ##  Lab Report ##
 
-Your Name: 
+Your Name: Nick Leavitt
 -----------
 
 
@@ -18,13 +18,15 @@ Answers to Pre-lab Questions (if applicable)
 This part is required only if you are requested to write your answers here. 
 
 * Question 1:
-
+  BL
 
 * Question 2:
-
+  BX LR
 
 * Question 3:
-
+  R0
+* Question 4:
+  Push LR to stack before calling a function and then Popping it out after.
 
 Answers to After-lab Questions (if applicable)
 -------

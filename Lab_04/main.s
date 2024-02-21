@@ -70,23 +70,38 @@ __main	PROC
 	STR r1, [r0, #GPIO_PUPDR]			;Clearing and setting button PUPDR to no pull up, no pull down
 	
 	LDR r2, =GPIOA_BASE					;using r2 as GPIOA base
+
+
+
+
+
+
+
 loop
 	LDR r1, [r0, #GPIO_IDR]			;Load Idr
 	ROR r1, r1, #BUTTON_PIN			;Rotate until button pin is in the LSB position
 	BIC r1, r1, #0xfffffffe			;Clear everything but LSB
 	EOR r1, r1, #1					;Button is high when open, so this flips the bit
 	CMP r1, #1						;Compare LSB to #1
-	BEQ	pres						;If equal, go to pres//means the button was pressed
+	BEQ	wait						;If equal, go to pres//means the button was pressed
 	B skip							;Skip the button pressed code
-pres
+wait
+	LDR r1, [r0, #GPIO_IDR]			;Testing if the button is still pressed//same code as above
+	ROR r1, r1, #BUTTON_PIN
+	BIC r1, r1, #0xfffffffe
+	EOR r1, r1, #1					
+	CMP r1, #1
+	BEQ wait
+notp
+;-------------------
 	LDR r1, [r0, #GPIO_IDR]			;Load Idr
 	ROR r1, r1, #BUTTON_PIN			;Rotate until button pin is in the LSB position
 	BIC r1, r1, #0xfffffffe			;Clear everything but LSB
 	EOR r1, r1, #1					;Button is high when open, so this flips the bit
 	CMP r1, #1						;Compare LSB to #1
-	BEQ	pres2						;If equal, go to pres//means the button was pressed
-	B pres					
-pres2
+	BEQ	pres						;If equal, go to pres//means the button was pressed
+	B notp							;Skip the button pressed code
+pres
 	LDR r3, [r2, #GPIO_ODR]
 	EOR r3, r3, #(1<<LED_PIN)		;Toggle the ODR pin (flip on/off)
 	STR r3, [r2, #GPIO_ODR]
@@ -97,9 +112,8 @@ hold
 	EOR r1, r1, #1					
 	CMP r1, #1
 	BEQ hold
-	
 skip
-	B	loop						;Loop
+	B	loop					;Loop to start
   
 stop 	B 		stop     		; dead loop & program hangs here
 
