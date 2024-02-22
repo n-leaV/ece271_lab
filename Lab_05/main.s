@@ -18,14 +18,16 @@
 	INCLUDE stm32l476xx_constants.s 
 	IMPORT stepper_pin_init
 	IMPORT delay
-	IMPORT full_step
+	IMPORT full_step_cw
+	IMPORT full_step_ccw
 	IMPORT half_step
+	IMPORT butt_init
 
-LED_PIN			EQU	5
 A_PIN			EQU 5
 NOT_A_PIN		EQU 6
 B_PIN			EQU 8
 NOT_B_PIN		EQU 9
+BUTTON_PIN 		EQU 13
 DLY				EQU 6500
 FULL_360		EQU 512
 HALF_360		EQU 1024
@@ -40,13 +42,49 @@ HALF_360		EQU 1024
 __main	PROC
 		
 	BL stepper_pin_init
-	
-	MOV r4, #FULL_360
-loop	
-	BL full_step
-	SUBS r4, #1
-	BNE	loop
+	BL butt_init
+	MOV r5, #0
+start
+	LDR r0, =GPIOC_BASE
+	LDR r1, [r0, #GPIO_IDR]			;Load Idr
+	ROR r1, r1, #BUTTON_PIN			;Rotate until button pin is in the LSB position
+	BIC r1, r1, #0xfffffffe			;Clear everything but LSB
+	EOR r1, r1, #1					;Button is high when open, so this flips the bit
+	CMP r1, #1						;Compare LSB to #1
+	BEQ	pres						;If equal, go to pres//means the button was pressed
+	B	start
+loop
+pres
+	CMP r5, #0
+	BEQ	cw
+	B	ccw
+cw	
+	BL 	full_step_cw
+	B	skip
+ccw	
+	BL	full_step_ccw
+skip	
+	LDR r0, =GPIOC_BASE
+	LDR r1, [r0, #GPIO_IDR]			;Testing if the button is still pressed//same code as above
+	ROR r1, r1, #BUTTON_PIN
+	BIC r1, r1, #0xfffffffe
+	EOR r1, r1, #1					
+	CMP r1, #1
+	BNE	break
+	B	loop
+break
+	EOR r5, r5, #1
+	B	start
 
+
+
+;;;;--------WORKING LAB CODE---------
+;;;;	MOV r4, #FULL_360
+;;;;loop	
+;;;;	BL half_step
+;;;;	SUBS r4, #1
+;;;;	BNE	loop
+;;;;---------------------------------
 
 stop 	B 		stop     		; dead loop & program hangs here
 
