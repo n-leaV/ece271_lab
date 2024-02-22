@@ -39,7 +39,7 @@ Answers to After-lab Questions (if applicable)
   CMP updates the flags, and does not store any values
 
 * Question 4:
-  You could use BIC to turn off an LED by clearing the bit that powers the LED
+  You could use BIC to turn off an LED by clearing the bit that powers the LED.
 
 Suggestions and Comments
 -------
