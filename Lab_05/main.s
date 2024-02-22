@@ -19,13 +19,16 @@
 	IMPORT stepper_pin_init
 	IMPORT delay
 	IMPORT full_step
+	IMPORT half_step
 
-LED_PIN	EQU	5
-A_PIN	EQU 5
-NOT_A_PIN	EQU 6
-B_PIN	EQU 8
-NOT_B_PIN	EQU 9
-DLY		EQU 6500
+LED_PIN			EQU	5
+A_PIN			EQU 5
+NOT_A_PIN		EQU 6
+B_PIN			EQU 8
+NOT_B_PIN		EQU 9
+DLY				EQU 6500
+FULL_360		EQU 512
+HALF_360		EQU 1024
 	
 	AREA    main, CODE, READONLY
 	EXPORT	__main				; make __main visible to linker
@@ -36,8 +39,13 @@ DLY		EQU 6500
 
 __main	PROC
 		
-BL stepper_pin_init
-
+	BL stepper_pin_init
+	
+	MOV r4, #FULL_360
+loop	
+	BL full_step
+	SUBS r4, #1
+	BNE	loop
 
 
 stop 	B 		stop     		; dead loop & program hangs here

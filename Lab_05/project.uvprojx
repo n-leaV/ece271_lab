@@ -404,6 +404,11 @@
               <FileType>5</FileType>
               <FilePath>.\README.md</FilePath>
             </File>
+            <File>
+              <FileName>functions.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\functions.s</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
