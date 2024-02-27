@@ -43,7 +43,7 @@ __main	PROC
 		
 	BL stepper_pin_init
 	BL butt_init
-	MOV r5, #0
+	MOV r5, #0						;Initializing r5, I use this to determine the direction.
 start
 	LDR r0, =GPIOC_BASE
 	LDR r1, [r0, #GPIO_IDR]			;Load Idr
@@ -55,25 +55,25 @@ start
 	B	start
 loop
 pres
-	CMP r5, #0
-	BEQ	cw
-	B	ccw
+	CMP r5, #0						;Checking r5 to determine direction of spin
+	BEQ	cw							;If 0, clockwise
+	B	ccw							;Else Counter Clockwise
 cw	
-	BL 	full_step_cw
+	BL 	full_step_cw				;Runs only when button is held down
 	B	skip
 ccw	
-	BL	full_step_ccw
+	BL	full_step_ccw				;Runs only when button is held down
 skip	
 	LDR r0, =GPIOC_BASE
 	LDR r1, [r0, #GPIO_IDR]			;Testing if the button is still pressed//same code as above
 	ROR r1, r1, #BUTTON_PIN
-	BIC r1, r1, #0xfffffffe
+	BIC r1, r1, #0xfffffffe	
 	EOR r1, r1, #1					
 	CMP r1, #1
 	BNE	break
 	B	loop
 break
-	EOR r5, r5, #1
+	EOR r5, r5, #1					;Flips r5, therefore changing direction
 	B	start
 
 
