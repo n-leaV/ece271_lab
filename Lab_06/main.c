@@ -32,6 +32,7 @@ int main(void){
   // Rising trigger selection
   // 0 = trigger disabled, 1 = trigger enabled
   EXTI->RTSR1 |= EXTI_RTSR1_RT3;  
+	//use a volatile for you interrupt var, other wise compiler will shit itself
 
 	while(1);
 }
