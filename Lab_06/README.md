@@ -38,7 +38,7 @@ This part is required only if you are requested to write your answers here.
   PC13 input pin
   Enable SYSCFG clock
   EXTI Line -> Pin 13
-  Set interrupt trigger to tyep of falling edge
+  Set interrupt trigger to type of falling edge
   Enable interrupt in NVIC
 
 * Question 5:
