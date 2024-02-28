@@ -348,6 +348,9 @@ Default_Handler PROC
         EXPORT     EXTI1_IRQHandler                  [WEAK]
         EXPORT     EXTI2_IRQHandler                  [WEAK]
         EXPORT     EXTI3_IRQHandler                  [WEAK]
+		
+		EXPORT     EXTI13_IRQHandler                 [WEAK]		;Modified
+			
         EXPORT     EXTI4_IRQHandler                  [WEAK]
         EXPORT     DMA1_Channel1_IRQHandler          [WEAK]
         EXPORT     DMA1_Channel2_IRQHandler          [WEAK]
