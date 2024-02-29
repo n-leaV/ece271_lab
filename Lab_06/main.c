@@ -8,7 +8,7 @@
 
 void led_init(void);
 void butt_init(void);
-
+void EXTI15_10_Handler(void);
 
 int main(void){
 
@@ -17,24 +17,37 @@ int main(void){
 	led_init();
 	butt_init();
 	
-  NVIC_EnableIRQ(EXTI3_IRQn); // Enable Interrupt
-	
   // Connect External Line to the GPI
   RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
-  SYSCFG->EXTICR[3] &= ~SYSCFG_EXTICR1_EXTI3; 
-  SYSCFG->EXTICR[3] |=  SYSCFG_EXTICR1_EXTI3_PA; 
-	
-  // Interrupt Mask Register
-  // 0 = marked, 1 = not masked (enabled)
-  EXTI->IMR1  |= EXTI_IMR1_IM13;     
+  SYSCFG->EXTICR[3] &= ~SYSCFG_EXTICR4_EXTI13; 
+  SYSCFG->EXTICR[3] |=  SYSCFG_EXTICR4_EXTI13_PC; 
 	
   // Rising trigger selection
   // 0 = trigger disabled, 1 = trigger enabled
-  EXTI->RTSR1 |= EXTI_RTSR1_RT13;  
-	//use a volatile for you interrupt var, other wise compiler will shit itself
+  EXTI->RTSR1 &= ~(EXTI_RTSR1_RT13);  //disabling rising edge
+  EXTI->FTSR1 |= EXTI_FTSR1_FT13;  		//enabling falling edge
+
+	NVIC_SetPriority(EXTI15_10_IRQn,1);		//Set Priority to 1
+	
+	// Interrupt Mask Register
+  // 0 = marked, 1 = not masked (enabled)
+  EXTI->IMR1  |= EXTI_IMR1_IM13;    
+	
+	NVIC_EnableIRQ(EXTI15_10_IRQn); // Enable Interrupt
+	
 
 	while(1);
 }
+
+void EXTI15_10_Handler(void){
+	//make sure it the right pin(13)
+	GPIOA->ODR ^= (1<<(LED_PIN));
+	//clear pending request
+	//clear pending status
+	
+}
+
+
 
 void led_init(void){
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;	// Enable the clock of Port A
