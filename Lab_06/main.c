@@ -41,10 +41,12 @@ int main(void){
 
 void EXTI15_10_Handler(void){
 	//make sure it the right pin(13)
-	GPIOA->ODR ^= (1<<(LED_PIN));
-	//clear pending request
-	//clear pending status
+	NVIC_ClearPendingIRQ(EXTI15_10_IRQn);		//clear pending status
 	
+	if ((EXTI->PR1 & EXTI_PR1_PIF13) == EXTI_PR1_PIF13){		//If flag is set execute toggle
+		GPIOA->ODR ^= (1<<(LED_PIN));
+	}
+	EXTI->PR1 |= EXTI_PR1_PIF13;	//clear interrupt pending request
 }
 
 
