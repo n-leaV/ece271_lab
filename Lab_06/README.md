@@ -49,13 +49,13 @@ Answers to After-lab Questions (if applicable)
 -------
 
 * Question 1:
-
+  You can clear a pending request by writing a 1 to the register.
 
 * Question 2:
-
+  If you don't clear the interrupt flag, the computer will believe that it still has an interrupt to run, and you will never exit your interrupt code.
 
 * Question 3:
-
+  It is possible to trigger an EXTI programmatically. Triggering an EXTI programmatically can be useful for debugging purposes.
 
 Suggestions and Comments
 -------
@@ -70,8 +70,8 @@ Suggestions and Comments
 Lab Credits
 -------
 Did you received any help from someone other than the instructor and lab teaching assistants?
-- Yes [ ]
+- Yes [x]
 - No []
 
 If yes, please give a short explanation.
-
+I worked through the pre lab with Swaroop Handral. Owen and Atticus helped me debug my main code.
