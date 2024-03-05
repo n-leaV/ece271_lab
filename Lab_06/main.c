@@ -27,11 +27,13 @@ int main(void){
   EXTI->RTSR1 &= ~(EXTI_RTSR1_RT13);  //disabling rising edge
   EXTI->FTSR1 |= EXTI_FTSR1_FT13;  		//enabling falling edge
 
-	NVIC_SetPriority(EXTI15_10_IRQn,1);		//Set Priority to 1
+	
 	
 	// Interrupt Mask Register
   // 0 = marked, 1 = not masked (enabled)
-  EXTI->IMR1  |= EXTI_IMR1_IM13;    
+  EXTI->IMR1  |= EXTI_IMR1_IM13;
+	
+	NVIC_SetPriority(EXTI15_10_IRQn,1);		//Set Priority to 1
 	
 	NVIC_EnableIRQ(EXTI15_10_IRQn); // Enable Interrupt
 	
