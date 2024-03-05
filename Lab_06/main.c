@@ -5,17 +5,22 @@
 // PC.13 <--> Blue user button
 #define LED_PIN    5
 #define BUTTON_PIN 13
-
+extern void full_step_cw(void);	//pulling from assembly file functions.s
+extern void stepper_pin_init(void);
+//extern void delay(void);
 void led_init(void);
-void butt_init(void);
+void button_init(void);
 void EXTI15_10_Handler(void);
+
+volatile int toggle = 0;
 
 int main(void){
 
 	//System_Clock_Init(); // Switch System Clock = 80 MHz
 	
 	led_init();
-	butt_init();
+	button_init();
+	stepper_pin_init();
 	
   // Connect External Line to the GPI
   RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
@@ -37,7 +42,14 @@ int main(void){
 	
 	NVIC_EnableIRQ(EXTI15_10_IRQn); // Enable Interrupt
 	
-
+	///something cool////
+	
+	while(1){
+		while (toggle == 1){
+			full_step_cw();
+		}
+	}
+	
 	while(1);
 }
 
@@ -46,7 +58,10 @@ void EXTI15_10_IRQHandler(void){
 	NVIC_ClearPendingIRQ(EXTI15_10_IRQn);		//clear pending status
 	
 	if ((EXTI->PR1 & EXTI_PR1_PIF13) == EXTI_PR1_PIF13){		//If flag is set execute toggle
-		GPIOA->ODR ^= (1<<(LED_PIN));
+		//GPIOA->ODR ^= (1<<(LED_PIN));////working Lab code
+		toggle ^= 1;
+		
+		
 	}
 	EXTI->PR1 |= EXTI_PR1_PIF13;	//clear interrupt pending request
 }
@@ -63,7 +78,7 @@ void led_init(void){
 	GPIOA->PUPDR |= (0);			//set PUPDR to no pullup/nopulldown
 }
 
-void butt_init(void){
+void button_init(void){
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;	//Enable clock for Port C
 	
 	GPIOC->MODER &= ~(3<<(2*BUTTON_PIN)); // Clear mode bits for pin 5
