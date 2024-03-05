@@ -12,7 +12,7 @@ void EXTI15_10_Handler(void);
 
 int main(void){
 
-	System_Clock_Init(); // Switch System Clock = 80 MHz
+	//System_Clock_Init(); // Switch System Clock = 80 MHz
 	
 	led_init();
 	butt_init();
@@ -24,7 +24,7 @@ int main(void){
 	
   // Rising trigger selection
   // 0 = trigger disabled, 1 = trigger enabled
-  EXTI->RTSR1 &= ~(EXTI_RTSR1_RT13);  //disabling rising edge
+  EXTI->RTSR1 &= ~EXTI_RTSR1_RT13;  //disabling rising edge
   EXTI->FTSR1 |= EXTI_FTSR1_FT13;  		//enabling falling edge
 
 	
@@ -41,7 +41,7 @@ int main(void){
 	while(1);
 }
 
-void EXTI15_10_Handler(void){
+void EXTI15_10_IRQHandler(void){
 	//make sure it the right pin(13)
 	NVIC_ClearPendingIRQ(EXTI15_10_IRQn);		//clear pending status
 	
