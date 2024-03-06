@@ -55,7 +55,7 @@ Answers to After-lab Questions (if applicable)
   If you don't clear the interrupt flag, the computer will believe that it still has an interrupt to run, and you will never exit your interrupt code.
 
 * Question 3:
-  It is possible to trigger an EXTI programmatically. Triggering an EXTI programmatically can be useful for debugging purposes.
+  It is possible to trigger an EXTI programmatically. This is usefule for exception Handling. Exception handling is when there are abnormal situations that we dont want to run, like dividing by zero, or running an illegal opcode.It can also be used for Privilidged hardware access, which can allow for unprivilidged code to run otherwise inaccessable instructions.
 
 Suggestions and Comments
 -------
