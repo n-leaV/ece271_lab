@@ -25,7 +25,6 @@ This part is required only if you are requested to write your answers here.
 
 * Question 3:
 
-
 Answers to After-lab Questions (if applicable)
 -------
 
