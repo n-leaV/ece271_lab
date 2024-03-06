@@ -18,10 +18,10 @@ Answers to Pre-lab Questions (if applicable)
 This part is required only if you are requested to write your answers here. 
 
 * Question 1: 
-  0x00000100
+  0x7
 
 * Question 2:
-  249
+  7999
 
 * Question 3:
 
