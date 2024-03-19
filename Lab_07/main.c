@@ -30,10 +30,11 @@ int main(void){
 	
 	while(1) {
 	Delay(1000);
-	GPIOA->ODR ^= (1<<(LED_PIN));								//toggle led//standard lab code
-	full_step_cw();
-//		while (runtoggle == 1){
-//			full_step_cw();
+	GPIOA->ODR ^= (1<<(LED_PIN));				//toggle led//standard lab code
+	runtoggle ^= 1;
+		while (runtoggle == 1){
+			full_step_cw();
+		}
 	}
 		
 	
