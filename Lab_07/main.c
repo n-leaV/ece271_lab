@@ -5,6 +5,11 @@
 // PC.13 <--> Blue user button
 #define LED_PIN    5
 
+extern void stepper_pin_init(void);
+extern void full_step_cw(void);
+extern void full_step_ccw(void);
+
+
 void led_init(void);
 void Delay(uint32_t nTime);
 void SysTick_Initialize (uint32_t ticks);
@@ -15,11 +20,11 @@ int main(void){
 	
 	led_init();
 	
-	SysTick_Initialize (7999);
+	SysTick_Initialize (79999);
 	
 	while(1) {
 	Delay(1000);
-	GPIOA->ODR ^= (1<<(LED_PIN));								//toggle led
+	GPIOA->ODR ^= (1<<(LED_PIN));								//toggle led//standard lab code
 	}
 		
 	
