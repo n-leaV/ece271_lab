@@ -14,21 +14,30 @@ void led_init(void);
 void Delay(uint32_t nTime);
 void SysTick_Initialize (uint32_t ticks);
 
+volatile int timedelay;
+
+volatile int runtoggle;
+
 int main(void){
 
 	System_Clock_Init(); // Switch System Clock = 80 MHz
 	
-	led_init();
+	led_init();			//led initialized
 	
-	SysTick_Initialize (79999);
+	stepper_pin_init();			//stepper_pin_init pin initialized
+	
+	SysTick_Initialize (79999);		//initalizing systick with 79999 ticks
 	
 	while(1) {
 	Delay(1000);
 	GPIOA->ODR ^= (1<<(LED_PIN));								//toggle led//standard lab code
+	full_step_cw();
+//		while (runtoggle == 1){
+//			full_step_cw();
 	}
 		
 	
-	while(1);
+	while(1);						//deadloop
 }
 
 void SysTick_Initialize (uint32_t ticks) {
@@ -49,7 +58,7 @@ void SysTick_Initialize (uint32_t ticks) {
 	
 }
 
-volatile int timedelay;
+
 
 void SysTick_Handler (void) {
 	if (timedelay > 0)			//decrement time delay
