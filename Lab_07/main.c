@@ -4,15 +4,22 @@
 // PA.5  <--> Green LED
 // PC.13 <--> Blue user button
 #define LED_PIN    5
-#define BUTTON_PIN 13
+
+void led_init(void);
+void Delay(uint32_t nTime);
+void SysTick_Initialize (uint32_t ticks);
 
 int main(void){
 
 	System_Clock_Init(); // Switch System Clock = 80 MHz
 	
+	SysTick_Initialize (7999);
+	
+	led_init();
+	
 	while(1) {
 	Delay(1000);
-	
+	GPIOA->ODR ^= (1<<(LED_PIN));								//toggle led
 	}
 		
 	
@@ -51,4 +58,12 @@ void Delay(uint32_t nTime) {
 		
 
 
-
+void led_init(void){
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;	// Enable the clock of Port A
+	GPIOA->MODER &= ~(3<<(2*LED_PIN)); // Clear mode bits for pin 5
+	GPIOA->MODER |= (1<<(2*LED_PIN)); // Set the mode bits to 01
+	GPIOA->OTYPER &= ~(1<<(LED_PIN)); // Clear bit 5
+	GPIOA->OTYPER |= (0);			// Set OTYPER to push pull
+	GPIOA->PUPDR &= ~(3<<(2*LED_PIN));	//Clear bits 11 and 10 and set PUPDR to 0
+	GPIOA->PUPDR |= (0);			//set PUPDR to no pullup/nopulldown
+}
