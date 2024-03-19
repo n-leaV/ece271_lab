@@ -13,9 +13,9 @@ int main(void){
 
 	System_Clock_Init(); // Switch System Clock = 80 MHz
 	
-	SysTick_Initialize (7999);
-	
 	led_init();
+	
+	SysTick_Initialize (7999);
 	
 	while(1) {
 	Delay(1000);
@@ -30,30 +30,30 @@ void SysTick_Initialize (uint32_t ticks) {
 
 	SysTick->CTRL = 0;						//disable Systick IRQ & counter
 	
-	SysTick->LOAD = ticks - 1;
+	SysTick->LOAD = ticks - 1;		//Sets the value of reload register
 	
-	NVIC_SetPriority (SysTick_IRQn, (1<<__NVIC_PRIO_BITS) - 1);
+	NVIC_SetPriority (SysTick_IRQn, (1<<__NVIC_PRIO_BITS) - 1);		//Set interrupt priority of systick
 	
-	SysTick->VAL = 0;
+	SysTick->VAL = 0;			//reset systick counter value
 	
-	SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk;
+	SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk;		//select the processors clocl as systicks
 	
-	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;			//enable systick exception request
 	
-	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
+	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;				//enable systick timer
 	
 }
 
 volatile int timedelay;
 
 void SysTick_Handler (void) {
-	if (timedelay > 0)
-		timedelay --;
+	if (timedelay > 0)			//decrement time delay
+		timedelay --;					//decrement
 }
 
 void Delay(uint32_t nTime) {
-	timedelay = nTime;
-	while(timedelay != 0);
+	timedelay = nTime;			
+	while(timedelay != 0);			//busy loop
 }
 		
 
