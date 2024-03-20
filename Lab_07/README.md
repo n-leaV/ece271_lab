@@ -29,13 +29,16 @@ Answers to After-lab Questions (if applicable)
 -------
 
 * Question 1:
-
+  15
 
 * Question 2:
-
+  A higher priority value represents a lower priority
 
 * Question 3:
+  IT needs to be manually enabled
 
+* Question 4:
+  1.049 seconds. found by 2^24 - 1 / clock frequency.
 
 Suggestions and Comments
 -------
@@ -50,8 +53,8 @@ Suggestions and Comments
 Lab Credits
 -------
 Did you received any help from someone other than the instructor and lab teaching assistants?
-- Yes [ ]
+- Yes [x]
 - No []
 
 If yes, please give a short explanation.
-
+  I worked with Collin and Aaron for post-lab questions.
