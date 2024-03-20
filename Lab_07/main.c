@@ -14,20 +14,22 @@ extern void full_step_cw(void);
 extern void full_step_ccw(void);
 
 
-void led_init(void);
+void GPIOA_led_init(void);
 void Delay(uint32_t nTime);
 void SysTick_Initialize (uint32_t ticks);
 void System_Clock_init(void);
 
 volatile int timedelay;
 
-volatile int runtoggle;
+volatile int ODR_pin;
 
 int main(void){
 
+	ODR_pin = 5;
+	
 	System_Clock_init(); // Switch System Clock = 80 MHz
 	
-	led_init();			//led initialized
+	GPIOA_led_init();			//led initialized
 	
 	stepper_pin_init();			//stepper_pin_init pin initialized
 	
@@ -35,11 +37,10 @@ int main(void){
 	
 	while(1) {
 	Delay(1000);
-	GPIOA->ODR ^= (1<<(LED_PIN));				//toggle led//standard lab code
-//	runtoggle ^= 1;
-//		while (runtoggle == 1){
-//			full_step_cw();
-//		}
+	//GPIOA->ODR ^= (1<<(LED_PIN));				//toggle led//standard lab code
+	GPIOA->ODR ^= (1<<(ODR_pin));
+	ODR_pin ++;
+	if (ODR_pin == 10) ODR_pin=5;
 	}
 		
 	
@@ -91,12 +92,15 @@ void System_Clock_init(void){
 }
 
 
-void led_init(void){
+void GPIOA_led_init(void){
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;	// Enable the clock of Port A
-	GPIOA->MODER &= ~(3<<(2*LED_PIN)); // Clear mode bits for pin 5
-	GPIOA->MODER |= (1<<(2*LED_PIN)); // Set the mode bits to 01
-	GPIOA->OTYPER &= ~(1<<(LED_PIN)); // Clear bit 5
-	GPIOA->OTYPER |= (0);			// Set OTYPER to push pull
-	GPIOA->PUPDR &= ~(3<<(2*LED_PIN));	//Clear bits 11 and 10 and set PUPDR to 0
-	GPIOA->PUPDR |= (0);			//set PUPDR to no pullup/nopulldown
+	int i =0;
+	for(i=0; i<10; i++){
+		GPIOA->MODER &= ~(3<<(2*i)); // Clear mode bits for pin 5
+		GPIOA->MODER |= (1<<(2*i)); // Set the mode bits to 01
+		GPIOA->OTYPER &= ~(1<<(i)); // Clear bit 5
+		GPIOA->OTYPER |= (0);			// Set OTYPER to push pull
+		GPIOA->PUPDR &= ~(3<<(2*i));	//Clear bits 11 and 10 and set PUPDR to 0
+		GPIOA->PUPDR |= (0);			//set PUPDR to no pullup/nopulldown
+	}
 }
