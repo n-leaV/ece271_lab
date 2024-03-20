@@ -3,7 +3,11 @@
 
 // PA.5  <--> Green LED
 // PC.13 <--> Blue user button
-#define LED_PIN    5
+#define LED_PIN			5
+#define MSI_RANGE		4
+#define MSI_ON			1
+#define MSI_RGSEL		3
+#define MSI_RDY			1
 
 extern void stepper_pin_init(void);
 extern void full_step_cw(void);
@@ -13,6 +17,7 @@ extern void full_step_ccw(void);
 void led_init(void);
 void Delay(uint32_t nTime);
 void SysTick_Initialize (uint32_t ticks);
+void System_Clock_init(void);
 
 volatile int timedelay;
 
@@ -20,21 +25,21 @@ volatile int runtoggle;
 
 int main(void){
 
-	System_Clock_Init(); // Switch System Clock = 80 MHz
+	System_Clock_init(); // Switch System Clock = 80 MHz
 	
 	led_init();			//led initialized
 	
 	stepper_pin_init();			//stepper_pin_init pin initialized
 	
-	SysTick_Initialize (79999);		//initalizing systick with 79999 ticks
+	SysTick_Initialize (7999);		//initalizing systick with 79999 ticks
 	
 	while(1) {
 	Delay(1000);
 	GPIOA->ODR ^= (1<<(LED_PIN));				//toggle led//standard lab code
-	runtoggle ^= 1;
-		while (runtoggle == 1){
-			full_step_cw();
-		}
+//	runtoggle ^= 1;
+//		while (runtoggle == 1){
+//			full_step_cw();
+//		}
 	}
 		
 	
@@ -70,7 +75,20 @@ void Delay(uint32_t nTime) {
 	timedelay = nTime;			
 	while(timedelay != 0);			//busy loop
 }
-		
+
+void System_Clock_init(void){
+	RCC->CR &= ~MSI_ON;			//Disable MSION
+	
+	RCC->CR &= ~(0xf << MSI_RANGE);		//clear range bits
+	RCC->CR |= (0x7 << MSI_RANGE);		//set range bits to 0x7
+	
+	RCC->CR |= (1<<MSI_RGSEL);				//setting RGSEL to 1
+	
+	RCC->CR |= MSI_ON;			//Disable MSION
+	
+	while((RCC->CR & (1<<MSI_RDY)) != (1<<MSI_RDY));
+	
+}
 
 
 void led_init(void){
