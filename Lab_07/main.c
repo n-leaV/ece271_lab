@@ -37,10 +37,10 @@ int main(void){
 	
 	while(1) {
 	Delay(1000);
-	//GPIOA->ODR ^= (1<<(LED_PIN));				//toggle led//standard lab code
-	GPIOA->ODR ^= (1<<(ODR_pin));
-	ODR_pin ++;
-	if (ODR_pin == 10) ODR_pin=5;
+	GPIOA->ODR ^= (1<<(LED_PIN));				//toggle led//standard lab code
+//	GPIOA->ODR ^= (1<<(ODR_pin));
+//	ODR_pin ++;
+//	if (ODR_pin == 10) ODR_pin=5;
 	}
 		
 	
