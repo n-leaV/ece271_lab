@@ -12,10 +12,23 @@ void LED_init(void);
 
 int main(void){
 	
-	int brightness = 500;
+	int i;
+	int brightness = 1;
+	int stepSize = 1;
+	
 	LED_init();
 	TIM2_CH1_Init();
-	TIM2->CCR1 = brightness;
+	
+	while(1) {
+		if ((brightness >=999) || (brightness <= 0))
+			stepSize = -stepSize;
+		
+		brightness += stepSize;
+		TIM2->CCR1 = brightness;
+		for(i = 0; i < 1000; i++);
+		
+	}
+	
 	
   // Dead loop & program hangs here
 	while(1);
