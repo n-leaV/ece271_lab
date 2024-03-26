@@ -6,6 +6,10 @@
 #define LED_PIN    5
 #define BUTTON_PIN 13
 
+#define zer 75
+#define pos90 100
+#define neg90 50
+
 void TIM2_CH1_Init(void);
 
 void LED_init(void);
@@ -65,7 +69,9 @@ void TIM2_CH1_Init() {
 	
 	//TIM2->ARR = 999;	//pwm period =999+1 * (1/50khz) = 0.02s		->servo
 	
-	TIM2->CCR1 = 500;	//initial duty cycle = 50%
+	TIM2->CCR1 = 500;	//initial duty cycle = 50%							->led
+	
+	//TIM2->CCR1 = zer;	//inital duty cycle of 7.5% ~1.5 ms/20 ms		75/1000 ->servo
 	
 	TIM2->CCMR1 &= ~TIM_CCMR1_OC1M;	// clear output compare mode bits
 	
