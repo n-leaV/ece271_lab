@@ -19,7 +19,7 @@ int main(void){
 	LED_init();
 	TIM2_CH1_Init();
 	
-	while(1) {
+	while(1) {																					//--->for led
 		if ((brightness >=999) || (brightness <= 0))
 			stepSize = -stepSize;
 		
@@ -27,7 +27,7 @@ int main(void){
 		TIM2->CCR1 = brightness;
 		for(i = 0; i < 1000; i++);
 		
-	}
+	}																										//--->for led
 	
 	
   // Dead loop & program hangs here
@@ -57,9 +57,13 @@ void TIM2_CH1_Init() {
 	
 	TIM2->CR1 &= ~TIM_CR1_DIR; //select up counting
 	
-	TIM2->PSC = 39;	//4Mhz/1+39  = 100khz
+	TIM2->PSC = 39;	//4Mhz/1+39  = 100khz				->for led
 	
-	TIM2->ARR = 999;	//pwm period =999+1 * (1/100khz = 0.01s
+	//TIM2->PSC = 79;	//4Mhz/1+79  = 50khz			->for servo	
+	
+	TIM2->ARR = 999;	//pwm period =999+1 * (1/100khz) = 0.01s		->led
+	
+	//TIM2->ARR = 999;	//pwm period =999+1 * (1/50khz) = 0.02s		->servo
 	
 	TIM2->CCR1 = 500;	//initial duty cycle = 50%
 	
