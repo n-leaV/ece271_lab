@@ -94,9 +94,9 @@ void System_Clock_init(void){
 
 void GPIOA_led_init(void){
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;	// Enable the clock of Port A
-	int i =0;
+	int i =0;												//cycles through i, initializes all GPIOA
 	for(i=0; i<10; i++){
-		GPIOA->MODER &= ~(3<<(2*i)); // Clear mode bits for pin 5
+		GPIOA->MODER &= ~(3<<(2*i)); // Clear mode bits for all pins
 		GPIOA->MODER |= (1<<(2*i)); // Set the mode bits to 01
 		GPIOA->OTYPER &= ~(1<<(i)); // Clear bit 5
 		GPIOA->OTYPER |= (0);			// Set OTYPER to push pull

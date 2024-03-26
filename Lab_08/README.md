@@ -1,13 +1,13 @@
 ##  Lab Report ##
 
-Your Name: 
+Your Name: Nick Leavitt
 -----------
 
 
 Lab Status
 -------
 Answer the following questions by put a "x" in the bracket.
-- Yes [], No []: Complete pre-lab
+- Yes [x], No []: Complete pre-lab
 - Yes [], No []: Complete basic lab requirements
 - Yes [], No []: Complete something cool
   - If you have completed something cool, give it a short summary below: 
@@ -18,7 +18,7 @@ Answers to Pre-lab Questions (if applicable)
 This part is required only if you are requested to write your answers here. 
 
 * Question 1:
-
+  
 
 * Question 2:
 
