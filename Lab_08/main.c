@@ -6,13 +6,15 @@
 #define LED_PIN    5
 #define BUTTON_PIN 13
 
-#define zer 75
+#define pos0 75
 #define pos90 100
 #define neg90 50
 
 void TIM2_CH1_Init(void);
 
 void LED_init(void);
+
+void waitms(int);
 
 int main(void){
 	
@@ -32,6 +34,13 @@ int main(void){
 		for(i = 0; i < 1000; i++);
 		
 	}																										//--->for led
+	
+		TIM2->CCR1 = pos90;
+		waitms(1000);
+		TIM2->CCR1 = neg90;
+		waitms(1000);
+		TIM2->CCR1 = pos0;
+	
 	
 	
   // Dead loop & program hangs here
@@ -71,7 +80,7 @@ void TIM2_CH1_Init() {
 	
 	TIM2->CCR1 = 500;	//initial duty cycle = 50%							->led
 	
-	//TIM2->CCR1 = zer;	//inital duty cycle of 7.5% ~1.5 ms/20 ms		75/1000 ->servo
+	//TIM2->CCR1 = pos0;	//inital duty cycle of 7.5% ~1.5 ms/20 ms		75/1000 ->servo
 	
 	TIM2->CCMR1 &= ~TIM_CCMR1_OC1M;	// clear output compare mode bits
 	
@@ -86,4 +95,18 @@ void TIM2_CH1_Init() {
 	TIM2->BDTR |= TIM_BDTR_MOE;		//Maine output enable
 	
 	TIM2->CR1 |= TIM_CR1_CEN;		//Start counter
+}
+
+
+void waitms(int ms) {
+	if (ms==0) return;
+	RCC->APB1ENR1 |= RCC_APB1ENR1_TIM7EN;
+	TIM7->CR1 &= ~TIM_CR1_CEN;
+	TIM7->SR = 0;
+	TIM7->CNT = 0;
+	TIM7->PSC = 3999;
+	TIM7->ARR = 20*ms -1;
+	TIM7->RCR = 0;
+	TIM7->CR1 |= TIM_CR1_CEN;
+	while ( (TIM7->SR & TIM_SR_UIF) == 0);	
 }
