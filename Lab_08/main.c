@@ -25,21 +25,21 @@ int main(void){
 	LED_init();
 	TIM2_CH1_Init();
 	
-	while(1) {																					//--->for led
-		if ((brightness >=999) || (brightness <= 0))
-			stepSize = -stepSize;
-		
-		brightness += stepSize;
-		TIM2->CCR1 = brightness;
-		for(i = 0; i < 1000; i++);
-		
-	}																										//--->for led
-	
-		TIM2->CCR1 = pos90;
+//	while(1) {																					//--->for led
+//		if ((brightness >=999) || (brightness <= 0))
+//			stepSize = -stepSize;
+//		
+//		brightness += stepSize;
+//		TIM2->CCR1 = brightness;
+//		for(i = 0; i < 1000; i++);
+//		
+//	}																										//--->for led
+//														
+		TIM2->CCR1 = pos90;															//--->for servo
 		waitms(1000);
 		TIM2->CCR1 = neg90;
 		waitms(1000);
-		TIM2->CCR1 = pos0;
+		TIM2->CCR1 = pos0;															//--->for servo
 	
 	
 	
@@ -70,17 +70,17 @@ void TIM2_CH1_Init() {
 	
 	TIM2->CR1 &= ~TIM_CR1_DIR; //select up counting
 	
-	TIM2->PSC = 39;	//4Mhz/1+39  = 100khz				->for led
+//	TIM2->PSC = 39;	//4Mhz/1+39  = 100khz				->for led
 	
-	//TIM2->PSC = 79;	//4Mhz/1+79  = 50khz			->for servo	
+	TIM2->PSC = 79;	//4Mhz/1+79  = 50khz			->for servo	
 	
-	TIM2->ARR = 999;	//pwm period =999+1 * (1/100khz) = 0.01s		->led
+//	TIM2->ARR = 999;	//pwm period =999+1 * (1/100khz) = 0.01s		->led
 	
-	//TIM2->ARR = 999;	//pwm period =999+1 * (1/50khz) = 0.02s		->servo
+	TIM2->ARR = 999;	//pwm period =999+1 * (1/50khz) = 0.02s		->servo
 	
-	TIM2->CCR1 = 500;	//initial duty cycle = 50%							->led
+//	TIM2->CCR1 = 500;	//initial duty cycle = 50%							->led
 	
-	//TIM2->CCR1 = pos0;	//inital duty cycle of 7.5% ~1.5 ms/20 ms		75/1000 ->servo
+	TIM2->CCR1 = pos0;	//inital duty cycle of 7.5% ~1.5 ms/20 ms		75/1000 ->servo
 	
 	TIM2->CCMR1 &= ~TIM_CCMR1_OC1M;	// clear output compare mode bits
 	
