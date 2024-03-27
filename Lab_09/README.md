@@ -1,13 +1,13 @@
 ##  Lab Report ##
 
-Your Name: 
+Your Name: Nick Leavitt
 -----------
 
 
 Lab Status
 -------
 Answer the following questions by put a "x" in the bracket.
-- Yes [], No []: Complete pre-lab
+- Yes [x], No []: Complete pre-lab
 - Yes [], No []: Complete basic lab requirements
 - Yes [], No []: Complete something cool
   - If you have completed something cool, give it a short summary below: 
@@ -16,15 +16,30 @@ Answer the following questions by put a "x" in the bracket.
 Answers to Pre-lab Questions (if applicable)
 -------
 This part is required only if you are requested to write your answers here. 
-
+- PART A
 * Question 1:
-
+  PSC=15999
 
 * Question 2:
-
+  8M
 
 * Question 3:
+  65.535 s
 
+* Question 4:
+Check UIF flag
+Update Timer variables
+reset the timer value
+
+- PART B
+* Question 1:
+Resolution = 1us
+
+* Question 2:
+minimum is 150 max is 38,000
+
+* Question 3:
+65.53 ms
 
 Answers to After-lab Questions (if applicable)
 -------
