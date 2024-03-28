@@ -76,17 +76,24 @@ int main(void){
 	
 	
 															//something cool
-		
+		int toggle = 1;
 		int spin = 75;
 		TIM5->CCR1 = spin;
 		while(1){
-			if(!(GPIOC->IDR & GPIO_IDR_IDR_13)){					//if button pressed
-				spin ++;								//toggle led
+			if((!(GPIOC->IDR & GPIO_IDR_IDR_13) && (spin<pos90) && (toggle==1))){					//if button pressed
+				spin ++;								
 				TIM5->CCR1 = spin;
-				waitms(1);
-			//	while(!(GPIOC->IDR & GPIO_IDR_IDR_13)) {};	//wait for button to unpress	
-			
+				if(spin == pos90) toggle ^= 1;
+				waitms(1);	
 			};
+
+			if((!(GPIOC->IDR & GPIO_IDR_IDR_13) && (spin>neg90) && (toggle==0))){					//if button pressed
+				spin --;								
+				TIM5->CCR1 = spin;
+				if(spin == neg90) toggle ^= 1;
+				waitms(1);	
+			};
+
 		};																							//COOL something
 	
 	
