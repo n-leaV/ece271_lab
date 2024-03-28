@@ -18,7 +18,7 @@ Answers to Pre-lab Questions (if applicable)
 This part is required only if you are requested to write your answers here. 
 
 * Question 1:
-  
+
 
 * Question 2:
 
@@ -30,7 +30,10 @@ Answers to After-lab Questions (if applicable)
 -------
 
 * Question 1:
-
+Counting Mode: Up counting
+ARR Value: 999
+CCR Value: 500
+PSC Value: 7999
 
 * Question 2:
 
@@ -51,8 +54,8 @@ Suggestions and Comments
 Lab Credits
 -------
 Did you received any help from someone other than the instructor and lab teaching assistants?
-- Yes [ ]
+- Yes [x]
 - No []
 
 If yes, please give a short explanation.
-
+Maddie helped check my code.

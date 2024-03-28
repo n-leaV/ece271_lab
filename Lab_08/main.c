@@ -58,19 +58,21 @@ int main(void){
 														
 		
 		
-		TIM5->CCR1 = 75;															//--->for servo
+		TIM5->CCR1 = pos0;															//--->for servo
 		waitms(50);
-		//delay(100);
 
-		TIM5->CCR1 = 25;
+		TIM5->CCR1 = neg90;
 		waitms(50);
-		//delay(100);
 
-		TIM5->CCR1 = 125;
+		TIM5->CCR1 = pos90;
 		waitms(50);
-		//delay(100);
-
-		TIM5->CCR1 = 75;															//--->for servo
+		
+		TIM5->CCR1 = pos0;															//--->for servo
+		waitms(50);
+		
+		
+		
+		TIM5->CCR1 = pos0;															//--->for servo
 	
 	
 															//something cool
