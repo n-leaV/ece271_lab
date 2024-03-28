@@ -3,18 +3,36 @@
 
 // PA.5  <--> Green LED
 // PC.13 <--> Blue user button
-#define LED_PIN    5
-#define BUTTON_PIN 13
+#define LED_PIN    	5
+#define SERV_PIN		0
+#define BUTTON_PIN	13
 
-#define pos0 75
-#define pos90 100
-#define neg90 50
+#define AF0_msk			0x00f0000f;
+#define AF0_val			0x00100002;
+
+#define pos0				75			//Duty cycle of 7.5% ~1.5 ms/20 ms		75/1000 ->servo
+#define pos90				125
+#define neg90				25
+#define LED_CCR1		500			//50% duty cycle
+
+#define	LED_PSC			39			//4Mhz/1+39  = 100khz				->for led
+#define SERV_PSC		79			//4Mhz/1+79  = 50khz			->for servo
+#define LED_ARR			999			//pwm period =999+1 * (1/100khz) = 0.01s		->led
+#define SERV_ARR		999			//pwm period =999+1 * (1/50khz) = 0.02s		->servo
+	
 
 void TIM2_CH1_Init(void);
 
+void TIM5_CH1_Init(void);
+
 void LED_init(void);
 
+void SERV_init(void);
+
 void waitms(int);
+
+void delay(int);
+
 
 int main(void){
 	
@@ -23,7 +41,9 @@ int main(void){
 	int stepSize = 1;
 	
 	LED_init();
+	SERV_init();
 	TIM2_CH1_Init();
+	TIM5_CH1_Init();
 	
 //	while(1) {																					//--->for led
 //		if ((brightness >=999) || (brightness <= 0))
@@ -34,12 +54,22 @@ int main(void){
 //		for(i = 0; i < 1000; i++);
 //		
 //	}																										//--->for led
-//														
-		TIM2->CCR1 = pos90;															//--->for servo
-		waitms(1000);
-		TIM2->CCR1 = neg90;
-		waitms(1000);
-		TIM2->CCR1 = pos0;															//--->for servo
+														
+		
+		
+		TIM5->CCR1 = 75;															//--->for servo
+		waitms(50);
+		//delay(100);
+
+		TIM5->CCR1 = 25;
+		waitms(50);
+		//delay(100);
+
+		TIM5->CCR1 = 125;
+		waitms(50);
+		//delay(100);
+
+		TIM5->CCR1 = 75;															//--->for servo
 	
 	
 	
@@ -65,26 +95,44 @@ void LED_init(){
 	GPIOA->ODR &= ~(1<<(LED_PIN));  // clears bit 5 of ODR/set bit 5 to zero
 }
 
+void SERV_init(){
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;	// Enable the clock of Port A
+	
+	GPIOA->MODER &= ~(3<<(2*SERV_PIN)); // Clear mode bits for pin 5
+	GPIOA->MODER	|= (2<<(2*SERV_PIN)); 	//set the mode bits to 10 - alternate function
+	
+	//GPIOA->AFR[0] &= ~(0xf<<(4*SERV_PIN));	//selecting alternate function 1
+	//GPIOA->AFR[0] |= 2UL<<(4*SERV_PIN);	//TIM channel 2 is defined as 01
+	GPIOA->AFR[0] &= ~AF0_msk;
+	GPIOA->AFR[0] |= AF0_val;
+	
+	
+	GPIOA->OTYPER &= ~(1<<(SERV_PIN)); // Clear bit 5
+	GPIOA->OTYPER |= (0);			// Set OTYPER to push pull
+	
+	GPIOA->PUPDR &= ~(3<<(2*SERV_PIN));	//Clear bits 11 and 10
+	GPIOA->PUPDR |= (0);			//set PUPDR to no pullup/nopulldown
+	
+	GPIOA->OSPEEDR &= ~(3<<(2*SERV_PIN));
+	GPIOA->OSPEEDR |= 3<<(2*SERV_PIN);
+	
+	GPIOA->ODR &= ~(1<<(SERV_PIN));  // clears bit 5 of ODR/set bit 5 to zero
+}
+
 void TIM2_CH1_Init() {
 	RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;		//enable timer clock
 	
 	TIM2->CR1 &= ~TIM_CR1_DIR; //select up counting
 	
-//	TIM2->PSC = 39;	//4Mhz/1+39  = 100khz				->for led
+	TIM2->PSC = LED_PSC;		//->for led	
 	
-	TIM2->PSC = 79;	//4Mhz/1+79  = 50khz			->for servo	
+	TIM2->ARR = LED_ARR;			//->for led
 	
-//	TIM2->ARR = 999;	//pwm period =999+1 * (1/100khz) = 0.01s		->led
-	
-	TIM2->ARR = 999;	//pwm period =999+1 * (1/50khz) = 0.02s		->servo
-	
-//	TIM2->CCR1 = 500;	//initial duty cycle = 50%							->led
-	
-	TIM2->CCR1 = pos0;	//inital duty cycle of 7.5% ~1.5 ms/20 ms		75/1000 ->servo
+	TIM2->CCR1 = LED_CCR1;						//inital duty cycle of 50%
 	
 	TIM2->CCMR1 &= ~TIM_CCMR1_OC1M;	// clear output compare mode bits
 	
-	TIM2->CCMR1 |= TIM_CCMR1_OC1M | TIM_CCMR1_OC1M_2;	//select pwm mode 1
+	TIM2->CCMR1 |= TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2;	//select pwm mode 1
 	
 	TIM2->CCMR1 |= TIM_CCMR1_OC1PE;	//output 1 preload enable - synchronicty
 	
@@ -97,6 +145,31 @@ void TIM2_CH1_Init() {
 	TIM2->CR1 |= TIM_CR1_CEN;		//Start counter
 }
 
+void TIM5_CH1_Init() {
+	RCC->APB1ENR1 |= RCC_APB1ENR1_TIM5EN;		//enable timer clock
+	
+	TIM5->CR1 &= ~TIM_CR1_DIR; //select up counting
+	
+	TIM5->PSC = SERV_PSC;		//->for servo	
+	
+	TIM5->ARR = SERV_ARR;			//->for servo
+	
+	TIM5->CCR1 = 500;						//inital duty cycle of 50% 
+	
+	TIM5->CCMR1 &= ~TIM_CCMR1_OC1M;	// clear output compare mode bits
+	
+	TIM5->CCMR1 |= TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2;	//select pwm mode 1
+	
+	TIM5->CCMR1 |= TIM_CCMR1_OC1PE;	//output 1 preload enable - synchronicty
+	
+	TIM5->CCER &= ~TIM_CCER_CC1P;		//select output polarity
+	
+	TIM5->CCER |= TIM_CCER_CC1E;		//enable output channel 1
+	
+	TIM5->BDTR |= TIM_BDTR_MOE;		//Maine output enable
+	
+	TIM5->CR1 |= TIM_CR1_CEN;		//Start counter
+}
 
 void waitms(int ms) {
 	if (ms==0) return;
@@ -109,4 +182,11 @@ void waitms(int ms) {
 	TIM7->RCR = 0;
 	TIM7->CR1 |= TIM_CR1_CEN;
 	while ( (TIM7->SR & TIM_SR_UIF) == 0);	
+}
+
+void delay(int ms){
+	unsigned int i, j;
+	for(i=0; i<ms; i++){
+		for(j=0; j<2500; j++);
+	}
 }
