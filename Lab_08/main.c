@@ -31,7 +31,7 @@ void SERV_init(void);
 
 void waitms(int);
 
-void delay(int);
+void button_init(void);
 
 
 int main(void){
@@ -40,6 +40,7 @@ int main(void){
 	int brightness = 1;
 	int stepSize = 1;
 	
+	button_init();
 	LED_init();
 	SERV_init();
 	TIM2_CH1_Init();
@@ -71,6 +72,20 @@ int main(void){
 
 		TIM5->CCR1 = 75;															//--->for servo
 	
+	
+															//something cool
+		
+		int spin = 75;
+		TIM5->CCR1 = spin;
+		while(1){
+			if(!(GPIOC->IDR & GPIO_IDR_IDR_13)){					//if button pressed
+				spin ++;								//toggle led
+				TIM5->CCR1 = spin;
+				waitms(1);
+			//	while(!(GPIOC->IDR & GPIO_IDR_IDR_13)) {};	//wait for button to unpress	
+			
+			};
+		};																							//COOL something
 	
 	
   // Dead loop & program hangs here
@@ -184,9 +199,13 @@ void waitms(int ms) {
 	while ( (TIM7->SR & TIM_SR_UIF) == 0);	
 }
 
-void delay(int ms){
-	unsigned int i, j;
-	for(i=0; i<ms; i++){
-		for(j=0; j<2500; j++);
-	}
+void button_init(void){
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;	//Enable clock for Port C
+	
+	GPIOC->MODER &= ~(3<<(2*BUTTON_PIN)); // Clear mode bits for pin 5
+	GPIOC->MODER |= (0<<(2*BUTTON_PIN)); // Set the mode bits to 00
+	
+	GPIOC->PUPDR &= ~(3<<(2*BUTTON_PIN));	//Clear bits 26 and 27
+	GPIOC->PUPDR |= (0);			//set PUPDR to no pullup/nopulldown
 }
+
