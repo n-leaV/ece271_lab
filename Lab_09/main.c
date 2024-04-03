@@ -90,31 +90,31 @@ void TIM4_CH1_Init() {
 	//while(1)
 }
 
-//void TIM3_CH2_INIT(void){
-//    RCC->APB1ENR1 |= RCC_APB1ENR1_TIM3EN;        //timer 3    clock
-//    
-//    TIM3->CR1 &= ~TIM_CR1_DIR;    //choosing upcounting
-//    
-//    TIM3->PSC = 15;            //16MHz/(1+PSC) = 1MHz psc value to make a 1 MHz clock
-//    
-//    TIM3->ARR = 0xFFFF;            //maximum arr value
-//    
-//    TIM3->CCR2 = 10;                                        //10us pulse
-//    
-//    TIM3->CCMR1 &= ~TIM_CCMR1_OC2M;            //clear output compare bits
-//    
-//    TIM3->CCMR1 |= TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2;        //select upcounting
-//    
-//    TIM3->CCMR1 |= TIM_CCMR1_OC1PE;                //output 1 preload enable
-//    
-//    TIM3->CCER &= ~TIM_CCER_CC2P;                    //output Active High
-//    
-//    TIM3->CCER |= TIM_CCER_CC2E;            //starting the TIM 3 
-//    
-//    //TIM2->BDTR |= TIM_BDTR_MOE;
-//    
-//    TIM3->CR1 |= TIM_CR1_CEN;                    //enable
-//}
+void TIM3_CH2_INIT(void){
+    RCC->APB1ENR1 |= RCC_APB1ENR1_TIM3EN;        //timer 3    clock
+    
+    TIM3->CR1 &= ~TIM_CR1_DIR;    //choosing upcounting
+    
+    TIM3->PSC = 15;            //16MHz/(1+PSC) = 1MHz psc value to make a 1 MHz clock
+    
+    TIM3->ARR = 0xFFFF;            //maximum arr value
+    
+    TIM3->CCR2 = 10;                                        //10us pulse
+    
+    TIM3->CCMR1 &= ~TIM_CCMR1_OC2M;            //clear output compare bits
+    
+    TIM3->CCMR1 |= TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2;        //select upcounting
+    
+    TIM3->CCMR1 |= TIM_CCMR1_OC1PE;                //output 1 preload enable
+    
+    TIM3->CCER &= ~TIM_CCER_CC2P;                    //output Active High
+    
+    TIM3->CCER |= TIM_CCER_CC2E;            //starting the TIM 3 
+    
+    //TIM2->BDTR |= TIM_BDTR_MOE;
+    
+    TIM3->CR1 |= TIM_CR1_CEN;                    //enable
+}
 
 void TIM4_IRQHandler() {
 	uint32_t current_captured;
