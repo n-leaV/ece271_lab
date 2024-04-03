@@ -9,6 +9,8 @@
 
 void System_Clock_init(void);
 void GPIOB_pin_init(int B_PIN);
+void TIM4_CH1_Init(void);
+void TIM3_CH2_Init(void);
 
 volatile int32_t pulse_width = 0;
 volatile int32_t last_captured = 0;
@@ -19,9 +21,11 @@ volatile int32_t inches;
 int main(void){
 
 	System_Clock_init(); // Switch System Clock = 80 MHz
+	RCC->AHB2ENR |= (RCC_AHB2ENR_GPIOCEN); //turning on clock for gpio C
 	GPIOB_pin_init(B_PIN6);
 	GPIOB_pin_init(B_PIN5);
-
+	TIM4_CH1_Init();
+	TIM3_CH2_Init();
 	
 	
 	
@@ -90,7 +94,7 @@ void TIM4_CH1_Init() {
 	//while(1)
 }
 
-void TIM3_CH2_INIT(void){
+void TIM3_CH2_Init(void){
     RCC->APB1ENR1 |= RCC_APB1ENR1_TIM3EN;        //timer 3    clock
     
     TIM3->CR1 &= ~TIM_CR1_DIR;    //choosing upcounting
@@ -122,7 +126,7 @@ void TIM4_IRQHandler() {
 	if((TIM4->SR & TIM_SR_CC1IF) != 0) {
 		current_captured = TIM4->CCR1;  //setting the current captured to the CCR1
 		
-		signal_polarity =  1-signal_polarity; // flips polarity
+		signal_polarity =  !signal_polarity; // flips polarity
 		
 		if(signal_polarity == 0){
 			pulse_width = ((current_captured-last_captured) + (OCT*(TIM4->ARR)));
