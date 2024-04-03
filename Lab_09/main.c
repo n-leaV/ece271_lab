@@ -3,27 +3,28 @@
 
 // PA.5  <--> Green LED
 // PC.13 <--> Blue user button
-#define B_PIN    6
+#define B_PIN6    6
+#define B_PIN5		5
 #define BUTTON_PIN 13
 
 void System_Clock_init(void);
-void GPIOB_pin_init(void);
+void GPIOB_pin_init(int B_PIN);
 
 volatile int32_t pulse_width = 0;
 volatile int32_t last_captured = 0;
 volatile int32_t signal_polarity = 0;
+volatile int32_t OCT = 0;
+volatile int32_t inches;
 
 int main(void){
 
 	System_Clock_init(); // Switch System Clock = 80 MHz
-	
-	// Enable the clock of Port A
-	
-	// Set pin PA.5 as GPIO output with push pull
+	GPIOB_pin_init(B_PIN6);
+	GPIOB_pin_init(B_PIN5);
 
-	// Turn on the LED
 	
-  // Dead loop & program hangs here
+	
+	
 	while(1);
 }
 void System_Clock_init(void){
@@ -35,7 +36,7 @@ void System_Clock_init(void){
 	RCC->CFGR |= RCC_CFGR_SW_1;
 }
 
-void GPIOB_pin_init(void){
+void GPIOB_pin_init(int B_PIN){
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;	// Enable the clock of Port B
 	
 	GPIOA->MODER &= ~(3<<(2*B_PIN)); // Clear mode bits for pin 6
@@ -64,7 +65,6 @@ void TIM4_CH1_Init() {
 	
 	TIM4->ARR = 0xffff;			//Maximum ARR value
 	
-	//TIM4->CCR1 = LED_CCR1;						//inital duty cycle of 50%
 	
 	TIM4->CCMR1 &= ~TIM_CCMR1_CC1S;		// clear capture/compare mode bits
 	TIM4->CCMR1 |= TIM_CCMR1_CC1S_0;	// set input timer 1
@@ -90,27 +90,54 @@ void TIM4_CH1_Init() {
 	//while(1)
 }
 
+//void TIM3_CH2_INIT(void){
+//    RCC->APB1ENR1 |= RCC_APB1ENR1_TIM3EN;        //timer 3    clock
+//    
+//    TIM3->CR1 &= ~TIM_CR1_DIR;    //choosing upcounting
+//    
+//    TIM3->PSC = 15;            //16MHz/(1+PSC) = 1MHz psc value to make a 1 MHz clock
+//    
+//    TIM3->ARR = 0xFFFF;            //maximum arr value
+//    
+//    TIM3->CCR2 = 10;                                        //10us pulse
+//    
+//    TIM3->CCMR1 &= ~TIM_CCMR1_OC2M;            //clear output compare bits
+//    
+//    TIM3->CCMR1 |= TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2;        //select upcounting
+//    
+//    TIM3->CCMR1 |= TIM_CCMR1_OC1PE;                //output 1 preload enable
+//    
+//    TIM3->CCER &= ~TIM_CCER_CC2P;                    //output Active High
+//    
+//    TIM3->CCER |= TIM_CCER_CC2E;            //starting the TIM 3 
+//    
+//    //TIM2->BDTR |= TIM_BDTR_MOE;
+//    
+//    TIM3->CR1 |= TIM_CR1_CEN;                    //enable
+//}
 
-void TIM4_IRQHandler(){
-	
+void TIM4_IRQHandler() {
 	uint32_t current_captured;
 	
 	if((TIM4->SR & TIM_SR_CC1IF) != 0) {
-		current_captured = TIM4->CCR1;
+		current_captured = TIM4->CCR1;  //setting the current captured to the CCR1
 		
-		signal_polarity = 1 - signal_polarity;
+		signal_polarity =  1-signal_polarity; // flips polarity
 		
 		if(signal_polarity == 0){
-			pulse_width = current_captured - last_captured;
-			if(pulse_width < 0)
-				pulse_width = pulse_width + TIM4->ARR;
+			pulse_width = ((current_captured-last_captured) + (OCT*(TIM4->ARR)));
+			inches = pulse_width/148;
+			OCT = 0;
+			//pulse_width = current_captured - last_captured;
+//			if(pulse_width <0)
+//				pulse_width = pulse_width + TIM4->ARR;
 		}
-		
 		last_captured = current_captured;
-		
 	}
-	if((TIM4->SR & TIM_SR_UIF) != 0){
+	if((TIM4->SR & TIM_SR_UIF) !=0){
+		if(signal_polarity){
+			OCT = OCT + 1;
+		}	
 		TIM4->SR &= ~TIM_SR_UIF;
 	}
-	
 }
