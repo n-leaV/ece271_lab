@@ -55,11 +55,13 @@ int main(void){
 	while(1){
 
 		if(inches<8){					//if button pressed							
-				TIM5->CCR1 = pos90;
+		//		TIM5->CCR1 = pos90;
+				GPIOA->ODR |= (1<<(LED_PIN));		// Sets pin 5 of ODR to 1
 				waitms(1);	
 			}
 		else {
-			TIM5->CCR1 = neg90;
+//			TIM5->CCR1 = neg90;
+				GPIOA->ODR &= ~(1<<(LED_PIN));		// clears pin 5 of ODR
 		}
 	}
 	
@@ -191,10 +193,11 @@ void LED_init(){
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;	// Enable the clock of Port A
 	
 	GPIOA->MODER &= ~(3<<(2*LED_PIN)); // Clear mode bits for pin 5
-	GPIOA->MODER	|= (2<<(2*LED_PIN)); 	//set the mode bits to 10 - alternate function
+	GPIOA->MODER |= (1<<(2*LED_PIN)); // Set the mode bits to 01
+//	GPIOA->MODER	|= (2<<(2*LED_PIN)); 	//set the mode bits to 10 - alternate function
 	
-	GPIOA->AFR[0] &= ~(0xf<<(4*LED_PIN));	//selecting alternate function 1
-	GPIOA->AFR[0] |= 1UL<<(4*LED_PIN);	//TIM channel 2 is defined as 01
+//	GPIOA->AFR[0] &= ~(0xf<<(4*LED_PIN));	//selecting alternate function 1
+//	GPIOA->AFR[0] |= 1UL<<(4*LED_PIN);	//TIM channel 2 is defined as 01
 
 	GPIOA->OTYPER &= ~(1<<(LED_PIN)); // Clear bit 5
 	GPIOA->OTYPER |= (0);			// Set OTYPER to push pull
