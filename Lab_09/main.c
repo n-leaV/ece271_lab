@@ -51,23 +51,16 @@ int main(void){
 	TIM2_CH1_Init();
 	TIM5_CH1_Init();
 	
-	int toggle = 1;
 	int spin = 75;
 	while(1){
 
-		if(((inches<8) && (spin<pos90) && (toggle==1))){					//if button pressed
-				spin ++;								
-				TIM5->CCR1 = spin;
-				if(spin == pos90) toggle ^= 1;
+		if(inches<8){					//if button pressed							
+				TIM5->CCR1 = pos90;
 				waitms(1);	
-			};
-
-			if(((inches<8) && (spin>neg90) && (toggle==0))){					//if button pressed
-				spin --;								
-				TIM5->CCR1 = spin;
-				if(spin == neg90) toggle ^= 1;
-				waitms(1);	
-			};
+			}
+		else {
+			TIM5->CCR1 = neg90;
+		}
 	}
 	
 	
