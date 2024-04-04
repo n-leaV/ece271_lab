@@ -45,13 +45,13 @@ Answers to After-lab Questions (if applicable)
 -------
 
 * Question 1:
-
+  The timer Counts up. I have an overflow counter that keeps track of how many times the clock overflows. This is implemented in the Interrupt handler, and is factored into the calculations for pulse width.
 
 * Question 2:
-
+  The accuracy is within 4%
 
 * Question 3:
-
+  Its fairly accurate at a foot, and usually reads as such. Sometimes it can be jumpy but I beleive thats from an unstable platform and various interferences with the wave?
 
 Suggestions and Comments
 -------
