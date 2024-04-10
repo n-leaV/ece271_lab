@@ -264,3 +264,103 @@ void TIM5_CH1_Init(){
 	//Start the counter
 	TIM5->CR1 |= TIM_CR1_CEN;
 }
+
+void ADC1_Wakeup(void) {
+	
+	int wait_time;
+	
+	//DEEPPWD = 0 ADC awake
+	//DEEPPWD = 1 ADC asleep (default)
+	if((ADC1->CR & ADC_CR_DEEPPWD) == ADC_CR_DEEPPWD){
+		ADC1->CR &= ~ADC_CR_DEEPPWD;
+	}
+	
+	//Enable voltage regulator for keeping the voltage underneath the maximum and the reading is accurate
+	ADC1->CR |= ADC_CR_ADVREGEN;
+	
+	//Wait to make sure the ADC is ready
+	wait_time = 20 * (8000000 / 1000000);
+	while(wait_time != 0) {
+		wait_time--;
+	}
+	
+}
+
+void ADC1_init(){
+	
+	//Enable HSI Clock and wait for it to be ready
+	RCC->CR |= RCC_CR_HSION;
+	while((RCC->CR & RCC_CR_HSIRDY) == 0);
+	
+	//Enable GPIOA Clock
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+	
+	//Set PA1 as analog to accept any voltage level
+	// GPIO Mode: Input(00), Output(01), AlterFunc(10), Analog(11, reset)
+	GPIOA->MODER &= ~GPIO_MODER_MODE1;  
+	GPIOA->MODER |=  GPIO_MODER_MODE1;      // Analog(11, reset)
+	
+	// GPIO Push-Pull: No pull-up, pull-down (00), Pull-up (01), Pull-down (10), Reserved (11)
+	GPIOA->PUPDR  &= ~GPIO_PUPDR_PUPDR1;  // No pull-up, no pull-down
+	
+	//Close analog switch to connect input to ADC
+	GPIOA->ASCR |= GPIO_ASCR_ASC1;
+	
+	//ADC 1 Initialization
+	//1Enable ADC Clock
+	RCC->AHB2ENR |= RCC_AHB2ENR_ADCEN;
+	
+	//2Disable ADC1 for modification
+	ADC1->CR &= ~ADC_CR_ADEN;
+	
+	//3I/O voltage booster to adjust voltage to ADC requirements
+	ADC123_COMMON->CCR |= SYSCFG_CFGR1_BOOSTEN;
+	
+	//4Enable internal channels so that the voltage is converted conversion
+	ADC123_COMMON->CCR |= ADC_CCR_VREFEN;
+	
+	//5Set prescaler to not divide for frequent measuring of signals
+	ADC123_COMMON->CCR &= ~ADC_CCR_PRESC;
+	
+	//6Synchronous clock mode for increased accuracy and reduced noise
+	ADC123_COMMON->CCR &= ~ADC_CCR_CKMODE;
+	ADC123_COMMON->CCR |= ADC_CCR_CKMODE_0;
+	
+	//7ALL ADCS as independant as the ADCs are connected
+	ADC123_COMMON->CCR &= ~ADC_CCR_DUAL;
+	
+	//8Wakeup ADC
+	ADC1_Wakeup();
+	
+	//9Configure Resolution to 12 bits
+	ADC1->CFGR &= ~ADC_CFGR_RES;
+	
+	//10Right alignment
+	ADC1->CFGR &= ~ADC_CFGR_ALIGN;
+	
+	//11Conversion selection
+	ADC1->SQR1 &= ~ADC_SQR1_L;
+	
+	//12Channel 6 as first converion
+	ADC1->SQR1 &= ~ADC_SQR1_SQ1;
+	ADC1->SQR1 |= ADC_SQR1_SQ1_1 |ADC_SQR1_SQ1_2;
+	
+	//13Channel 6 single ended
+	ADC1->DIFSEL &= ~ADC_DIFSEL_DIFSEL_6;
+	
+	//14ADC Sample Time
+	ADC1->SMPR1 |= ADC_SMPR1_SMP6;
+	
+	//15Discontinous mode
+	ADC1->CFGR &= ~ADC_CFGR_CONT;
+	
+	//16Software trigger
+	ADC1->CFGR &= ~ADC_CFGR_EXTEN;
+	
+	//17Enable ADC1
+	ADC1->CR |= ADC_CR_ADEN;
+	
+	//18Wait for ADC1 to be ready
+	while((ADC1->ISR & ADC_ISR_ADRDY) == 0);
+	
+}
