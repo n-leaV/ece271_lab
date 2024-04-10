@@ -364,3 +364,115 @@ void ADC1_init(){
 	while((ADC1->ISR & ADC_ISR_ADRDY) == 0);
 	
 }
+
+int ADC_call(){
+	
+	int value;
+	
+	ADC1->CR |= ADC_CR_ADSTART;
+	
+	while((ADC123_COMMON->CSR & ADC_CSR_EOC_MST) == 0);
+	
+	value = ADC1->DR;
+	
+	return value;
+	
+}
+
+int main(void){
+
+	SysTick_Initialize(7992);
+	System_Clock_Init(); // Switch System Clock = 80 MHz
+	configure_LED_pin();
+	TIM2_CH1_Init();
+	TIM5_CH1_Init();
+	
+	ADC1_init();
+	
+	configure_KEYPAD_pin();
+	
+	//Keypad Variables
+	char col, pressed_col, row, pressed_row = 0; //Keeps track of iteration and which button is pressed
+	int cols[] = {4, 10, 11, 12};								 //Column GPIO Pins
+	int rows[] = {0, 1, 2, 3};									 //Row GPIO Pins
+	int input_mask = 0x1C10;										 //For masking everything but input pins
+	int output_to_one = 0xF;										 //For setting rows bit to 1
+	char COL_ROW_DEBUG[64] = "";								 //Holds COL and ROW data for OLED
+	int delay_button = 500;
+	char key_map [4][4] = {											 //Maps keys to each col and row
+		{1, 2, 3, 'A'},
+		{4, 5, 6, 'B'},
+		{7, 8, 9, 'C'},
+		{'*', '0', '#', 'D'},
+	};
+	
+	char current_key = 0x0;										//Holds the current key in ASCII form
+
+	int i;
+	int brightness = 1;
+	int stepSize = 1;
+	int pot_delay = 100;
+	int led_mode = 0;
+	
+	while(1){
+		
+		GPIOC->ODR &= ~GPIO_ODR_OD0;
+		GPIOC->ODR &= ~GPIO_ODR_OD1;
+		GPIOC->ODR &= ~GPIO_ODR_OD2;
+		GPIOC->ODR &= ~GPIO_ODR_OD3; //Sets 0000 to all rows for column reading
+		
+		//Waits for a keypad press for scanning
+		while(((GPIOC->IDR & input_mask)) == input_mask);
+		
+		//Column Scan
+		for(col = 0; col < 4; col++){													//Finds the column pressed
+			if((GPIOC->IDR & (1<<cols[col])) == 0){
+				pressed_col = col;
+			}
+		}
+		
+		//Debouncer
+		Delay(10);
+		
+		//Sets all output bits to 1 for row scan
+		GPIOC->ODR |= output_to_one; 														
+		
+		//Row Scan
+		for(row = 0; row < 4; row++) {
+			GPIOC->ODR &= ~(1<<rows[row]); 											//Itterates setting the current bit to 0
+			if((GPIOC->IDR & (1<<cols[col])) == 0) {
+				pressed_row = row;
+			}
+			GPIOC->ODR |= (1<<rows[row]); 											//Resets current bit to 1
+		}
+		
+		current_key = key_map[pressed_row][pressed_col];			//Retrieves what the key represents from the map
+		
+		//Increase delay
+		if(current_key == 0x41){
+			led_mode = 0;
+		}
+		
+		//Decrease delay
+		if(current_key == 0x42){
+			led_mode = 1;
+		}
+
+		current_key = 0x0; //Sets current key to 0 when nothing is pressed
+		
+		if(led_mode == 0){
+			
+			TIM2->CCR1 = 999;
+			Delay((ADC_call())*0.24);
+			TIM2->CCR1 = 0;
+			Delay((ADC_call())*0.24);
+			
+		} else if (led_mode == 1){
+			
+			TIM2->CCR1 = (ADC_call())*0.24;
+			
+		}
+		
+	}
+	
+}
