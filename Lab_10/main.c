@@ -121,3 +121,17 @@ void SysTick_Initialize(uint32_t ticks) {
 	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
 	
 }
+
+void Delay(uint32_t nTime){
+	
+	TimeDelay = nTime;
+	while(TimeDelay != 0);
+	
+}
+
+void SysTick_Handler(void){
+	
+	if(TimeDelay > 0)
+		TimeDelay--;
+	
+}
