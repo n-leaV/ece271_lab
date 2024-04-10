@@ -96,3 +96,28 @@ void configure_KEYPAD_pin() {
 	GPIOC->PUPDR  &= ~GPIO_PUPDR_PUPD12;  			// C4 PC12
 	
 }
+
+void SysTick_Initialize(uint32_t ticks) {
+	
+	//Disable SysTick
+	SysTick->CTRL = 0;
+	
+	//Reload Register
+	SysTick->LOAD = ticks - 1;
+	
+	//Set Interrupt Priority
+	NVIC_SetPriority(SysTick_IRQn, (1<<__NVIC_PRIO_BITS) - 1);
+	
+	//Reset counter value
+	SysTick->VAL = 0;
+	
+	//Select Proccessor Clock
+	SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk;
+	
+	//Enables SysTick Interrupt
+	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+	
+	//Enable SysTick
+	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
+	
+}
